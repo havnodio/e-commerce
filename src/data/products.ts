@@ -23,7 +23,7 @@ export const products: Product[] = [
     description: '---.',
     price: 2.95,
     imageUrl: 'https://i.imgur.com/f0pP8nO.png',
-    category: 'Spicy',
+    category: '',
   },
   {
     id: 4,
