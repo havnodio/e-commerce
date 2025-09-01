@@ -14,7 +14,7 @@ export const products: Product[] = [
     name: 'TARALLI PEPERONCINO 140GR',
     description: 'Spicy taralli with a hint of chili pepper.',
     price: 2.95,
-    imageUrl: 'https://placehold.co/600x400/FCEBEA/333?text=TARALLI+PEPERONCINO',
+    imageUrl: 'https://i.imgur.com/d0aCWFL.png',
     category: 'Spicy',
   },
   {
