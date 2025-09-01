@@ -13,7 +13,7 @@ export const products: Product[] = [
     id: 2,
     name: 'TARALLI PEPERONCINO 140GR',
     description: 'S--',
-    price: 2.95,
+    price: 2.50,
     imageUrl: 'https://i.imgur.com/d0aCWFL.png',
     category: 'Spicy',
   },
