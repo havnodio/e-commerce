@@ -30,7 +30,7 @@ export const products: Product[] = [
     name: 'Taralli Integrali',
     description: 'Wholesome whole wheat taralli for a healthier snack.',
     price: 4.00,
-    imageUrl: 'https://imgur.com/5ddd6f0a-7490-4b7a-a3b7-5e19a55c8665',
+    imageUrl: 'https://i.imgur.com/4wtK2ZE.png',
     category: 'Healthy',
   },
 ];
