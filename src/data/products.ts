@@ -22,7 +22,7 @@ export const products: Product[] = [
     name: 'TARALLI HUILE  DOLIVE & SEL DE MER - 140G',
     description: '---.',
     price: 2.95,
-    imageUrl: 'blob:https://imgur.com/a1715dcb-aa56-4331-9905-8e931b35c89f',
+    imageUrl: 'https://i.imgur.com/f0pP8nO.png',
     category: 'Spicy',
   },
   {
