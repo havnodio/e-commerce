@@ -2,6 +2,7 @@ import { ProductCard } from "@/components/ProductCard";
 import type { Product } from "@/types";
 import HeroSection from "@/components/HeroSection";
 import Gallery from "@/components/Gallery";
+import WhyChooseUs from "@/components/WhyChooseUs";
 
 const featuredProducts: Product[] = [
   {
@@ -57,6 +58,8 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      <WhyChooseUs />
 
       <Gallery />
     </div>
