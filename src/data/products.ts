@@ -3,11 +3,11 @@ import type { Product } from '@/types';
 export const products: Product[] = [
   {
     id: 1,
-    name: 'Taralli Classici',
-    description: 'Classic taralli with extra virgin olive oil.',
-    price: 3.50,
-    imageUrl: 'https://placehold.co/600x400/F7F3E3/333?text=Taralli+Classici',
-    category: 'Classic',
+    name: 'Pack Trio de Taralli Gusto Club',
+    description: 'A special pack featuring three of our most popular taralli flavors.',
+    price: 7.90,
+    imageUrl: 'https://i.imgur.com/TtsqWAO.png',
+    category: 'Special Pack',
   },
   {
     id: 2,
