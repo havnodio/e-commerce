@@ -14,6 +14,7 @@ const AccountPage = () => {
   const [lastName, setLastName] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -29,7 +30,7 @@ const AccountPage = () => {
           .eq('id', user.id)
           .single();
 
-        if (error && error.code !== 'PGRST116') { // PGRST116 means no rows found, which is fine on first login
+        if (error && error.code !== 'PGRST116') { // PGRST116 means no rows found
           console.error('Error fetching profile:', error);
           showError("Erreur lors de la récupération de votre profil.");
         } else if (data) {
@@ -44,6 +45,56 @@ const AccountPage = () => {
     fetchProfile();
   }, [user]);
 
+  const uploadAvatar = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!user) return;
+    try {
+      setUploading(true);
+
+      if (!event.target.files || event.target.files.length === 0) {
+        throw new Error('Vous devez sélectionner une image à télécharger.');
+      }
+
+      const file = event.target.files[0];
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${user.id}/${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      if (!data.publicUrl) {
+        throw new Error("Impossible d'obtenir l'URL publique de l'avatar.");
+      }
+      
+      const publicUrl = data.publicUrl;
+
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl, updated_at: new Date().toISOString() })
+        .eq('id', user.id);
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      setAvatarUrl(publicUrl);
+      showSuccess("Avatar mis à jour avec succès !");
+    } catch (error: any) {
+      console.error('Error uploading avatar:', error);
+      showError(error.message || "Erreur lors du téléchargement de l'avatar.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -53,7 +104,6 @@ const AccountPage = () => {
       .update({ 
         first_name: firstName, 
         last_name: lastName, 
-        avatar_url: avatarUrl,
         updated_at: new Date().toISOString() 
       })
       .eq('id', user.id);
@@ -82,7 +132,6 @@ const AccountPage = () => {
 
     setUpdatingPassword(true);
 
-    // 1. Verify current password by trying to sign in again
     const { error: signInError } = await supabase.auth.signInWithPassword({
       email: user.email,
       password: currentPassword,
@@ -94,7 +143,6 @@ const AccountPage = () => {
       return;
     }
 
-    // 2. If current password is correct, update to the new password
     const { error: updateError } = await supabase.auth.updateUser({
       password: newPassword,
     });
@@ -131,13 +179,15 @@ const AccountPage = () => {
                   </AvatarFallback>
                 </Avatar>
                 <div className="w-full space-y-2">
-                    <Label htmlFor="avatarUrl">URL de l'avatar</Label>
+                    <Label htmlFor="avatarUpload">Changer d'avatar</Label>
                     <Input 
-                        id="avatarUrl" 
-                        value={avatarUrl} 
-                        onChange={(e) => setAvatarUrl(e.target.value)} 
-                        placeholder="https://example.com/avatar.png" 
+                        id="avatarUpload" 
+                        type="file"
+                        accept="image/png, image/jpeg"
+                        onChange={uploadAvatar}
+                        disabled={uploading}
                     />
+                    {uploading && <p className="text-sm text-gray-500">Téléchargement en cours...</p>}
                 </div>
               </div>
               <div className="space-y-2">
