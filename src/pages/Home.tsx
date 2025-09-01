@@ -45,6 +45,10 @@ const Home = () => {
       {/* Hero Section */}
       <HeroSection />
 
+      <Gallery />
+
+      <WhyChooseUs />
+
       {/* Featured Products Section */}
       <section className="py-16 sm:py-24">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -58,10 +62,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-      <WhyChooseUs />
-
-      <Gallery />
     </div>
   );
 };
