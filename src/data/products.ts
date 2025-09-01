@@ -30,7 +30,7 @@ export const products: Product[] = [
     name: 'Taralli Integrali',
     description: 'Wholesome whole wheat taralli for a healthier snack.',
     price: 4.00,
-    imageUrl: 'https://placehold.co/600x400/E8DDCB/333?text=Taralli+Integrali',
+    imageUrl: 'https://imgur.com/5ddd6f0a-7490-4b7a-a3b7-5e19a55c8665',
     category: 'Healthy',
   },
 ];
