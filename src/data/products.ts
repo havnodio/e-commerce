@@ -12,15 +12,15 @@ export const products: Product[] = [
   {
     id: 2,
     name: 'TARALLI PEPERONCINO 140GR',
-    description: 'Spicy taralli with a hint of chili pepper.',
+    description: 'S--',
     price: 2.95,
     imageUrl: 'https://i.imgur.com/d0aCWFL.png',
     category: 'Spicy',
   },
   {
     id: 3,
-    name: 'TARALLI PEPERONCINO 140GR',
-    description: 'Spicy taralli with a hint of chili pepper.',
+    name: 'TARALLI HUILE  DOLIVE & SEL DE MER - 140G',
+    description: '---.',
     price: 2.95,
     imageUrl: 'blob:https://imgur.com/a1715dcb-aa56-4331-9905-8e931b35c89f',
     category: 'Spicy',
