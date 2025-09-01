@@ -6,11 +6,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { showError, showSuccess } from "@/utils/toast";
 import { useEffect, useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const AccountPage = () => {
   const { user } = useAuth();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState('');
   const [loading, setLoading] = useState(true);
 
   const [currentPassword, setCurrentPassword] = useState('');
@@ -23,7 +25,7 @@ const AccountPage = () => {
         setLoading(true);
         const { data, error } = await supabase
           .from('profiles')
-          .select('first_name, last_name')
+          .select('first_name, last_name, avatar_url')
           .eq('id', user.id)
           .single();
 
@@ -33,6 +35,7 @@ const AccountPage = () => {
         } else if (data) {
           setFirstName(data.first_name || '');
           setLastName(data.last_name || '');
+          setAvatarUrl(data.avatar_url || '');
         }
         setLoading(false);
       }
@@ -47,7 +50,12 @@ const AccountPage = () => {
 
     const { error } = await supabase
       .from('profiles')
-      .update({ first_name: firstName, last_name: lastName, updated_at: new Date().toISOString() })
+      .update({ 
+        first_name: firstName, 
+        last_name: lastName, 
+        avatar_url: avatarUrl,
+        updated_at: new Date().toISOString() 
+      })
       .eq('id', user.id);
 
     if (error) {
@@ -115,6 +123,23 @@ const AccountPage = () => {
           </CardHeader>
           <form onSubmit={handleUpdateProfile}>
             <CardContent className="space-y-6">
+               <div className="flex items-center space-x-6">
+                <Avatar className="h-24 w-24">
+                  <AvatarImage src={avatarUrl || 'https://www.svgrepo.com/show/492676/avatar-boy.svg'} alt="User avatar" />
+                  <AvatarFallback>
+                    {firstName?.charAt(0).toUpperCase()}{lastName?.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="w-full space-y-2">
+                    <Label htmlFor="avatarUrl">URL de l'avatar</Label>
+                    <Input 
+                        id="avatarUrl" 
+                        value={avatarUrl} 
+                        onChange={(e) => setAvatarUrl(e.target.value)} 
+                        placeholder="https://example.com/avatar.png" 
+                    />
+                </div>
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input id="email" type="email" value={user?.email || ''} disabled />
