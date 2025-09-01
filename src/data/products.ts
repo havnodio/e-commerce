@@ -11,11 +11,11 @@ export const products: Product[] = [
   },
   {
     id: 2,
-    name: 'Taralli al Finocchio',
-    description: 'Crispy taralli with fennel seeds for a unique flavor.',
-    price: 3.75,
-    imageUrl: 'https://placehold.co/600x400/EAF2E3/333?text=Taralli+al+Finocchio',
-    category: 'Flavored',
+    name: 'TARALLI PEPERONCINO 140GR',
+    description: 'Spicy taralli with a hint of chili pepper.',
+    price: 2.95,
+    imageUrl: 'https://placehold.co/600x400/FCEBEA/333?text=TARALLI+PEPERONCINO',
+    category: 'Spicy',
   },
   {
     id: 3,
