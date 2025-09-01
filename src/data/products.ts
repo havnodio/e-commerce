@@ -1,0 +1,68 @@
+import type { Product } from '@/types';
+
+export const products: Product[] = [
+  {
+    id: 1,
+    name: 'Taralli Classici',
+    description: 'Classic taralli with extra virgin olive oil.',
+    price: 3.50,
+    imageUrl: 'https://placehold.co/600x400/F7F3E3/333?text=Taralli+Classici',
+    category: 'Classic',
+  },
+  {
+    id: 2,
+    name: 'Taralli al Finocchio',
+    description: 'Crispy taralli with fennel seeds for a unique flavor.',
+    price: 3.75,
+    imageUrl: 'https://placehold.co/600x400/EAF2E3/333?text=Taralli+al+Finocchio',
+    category: 'Flavored',
+  },
+  {
+    id: 3,
+    name: 'Taralli al Peperoncino',
+    description: 'Spicy taralli with a hint of chili pepper.',
+    price: 3.75,
+    imageUrl: 'https://placehold.co/600x400/FCEBEA/333?text=Taralli+al+Peperoncino',
+    category: 'Spicy',
+  },
+  {
+    id: 4,
+    name: 'Taralli Integrali',
+    description: 'Wholesome whole wheat taralli for a healthier snack.',
+    price: 4.00,
+    imageUrl: 'https://placehold.co/600x400/E8DDCB/333?text=Taralli+Integrali',
+    category: 'Healthy',
+  },
+  {
+    id: 5,
+    name: 'Taralli alle Olive',
+    description: 'Savory taralli with bits of black olives.',
+    price: 4.25,
+    imageUrl: 'https://placehold.co/600x400/DCE2CB/333?text=Taralli+alle+Olive',
+    category: 'Flavored',
+  },
+  {
+    id: 6,
+    name: 'Taralli al Rosmarino',
+    description: 'Aromatic taralli infused with fresh rosemary.',
+    price: 3.90,
+    imageUrl: 'https://placehold.co/600x400/E1E8E0/333?text=Taralli+al+Rosmarino',
+    category: 'Flavored',
+  },
+  {
+    id: 7,
+    name: 'Taralli Dolci',
+    description: 'Sweet taralli with a light sugar glaze.',
+    price: 4.50,
+    imageUrl: 'https://placehold.co/600x400/FDF2E9/333?text=Taralli+Dolci',
+    category: 'Sweet',
+  },
+  {
+    id: 8,
+    name: 'Taralli Multicereali',
+    description: 'Multi-grain taralli for a rich, nutty flavor.',
+    price: 4.20,
+    imageUrl: 'https://placehold.co/600x400/F5EFE6/333?text=Taralli+Multicereali',
+    category: 'Healthy',
+  },
+];
