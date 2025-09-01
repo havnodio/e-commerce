@@ -5,8 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
-import { Header } from "./components/Header";
-import { Footer } from "./components/Footer";
 import AboutPage from "./pages/About";
 import ContactPage from "./pages/Contact";
 import ProductsPage from "./pages/Products";
@@ -17,6 +15,7 @@ import SettingsPage from "./pages/Settings";
 import { AuthProvider } from "./contexts/AuthContext";
 import LoginPage from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Layout from "./components/Layout";
 
 const queryClient = new QueryClient();
 
@@ -28,28 +27,25 @@ const App = () => (
           <CartProvider>
             <Toaster />
             <Sonner />
-            <div className="flex flex-col min-h-screen bg-gray-50">
-              <Header />
-              <main className="flex-grow">
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/about" element={<AboutPage />} />
-                  <Route path="/contact" element={<ContactPage />} />
-                  <Route path="/products" element={<ProductsPage />} />
-                  <Route path="/login" element={<LoginPage />} />
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
 
-                  <Route element={<ProtectedRoute />}>
-                    <Route path="/account" element={<AccountPage />} />
-                    <Route path="/orders" element={<OrdersPage />} />
-                    <Route path="/settings" element={<SettingsPage />} />
-                  </Route>
+              <Route element={<Layout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/products" element={<ProductsPage />} />
 
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </main>
-              <Footer />
-            </div>
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/account" element={<AccountPage />} />
+                  <Route path="/orders" element={<OrdersPage />} />
+                  <Route path="/settings" element={<SettingsPage />} />
+                </Route>
+
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Route>
+            </Routes>
           </CartProvider>
         </AuthProvider>
       </BrowserRouter>
