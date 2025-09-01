@@ -20,7 +20,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       <CardContent className="p-4">
         <CardTitle className="text-lg font-semibold mb-2">{product.name}</CardTitle>
         <p className="text-gray-600 text-sm mb-4">{product.description}</p>
-        <p className="text-lg font-bold text-gray-800">${product.price.toFixed(2)}</p>
+        <p className="text-lg font-bold text-gray-800">{product.price.toFixed(2)} DT</p>
       </CardContent>
       <CardFooter className="p-4 pt-0">
         <Button className="w-full">
