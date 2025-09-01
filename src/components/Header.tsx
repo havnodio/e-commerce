@@ -1,10 +1,12 @@
-import { useState } from 'react';
-import { ShoppingCart, User, Search, Menu, X } from 'lucide-react';
+import { ShoppingCart, User, Search, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Link } from 'react-router-dom';
+import { useCart } from '@/contexts/CartContext';
+import CartSheetContent from './CartSheetContent';
 
 export const Header = () => {
+  const { itemCount } = useCart();
   const navItems = [
     { name: 'Home', href: '/' },
     { name: 'Products', href: '/products' },
@@ -39,9 +41,21 @@ export const Header = () => {
             <Button variant="ghost" size="icon" className="hidden md:inline-flex">
               <User className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon">
-              <ShoppingCart className="h-5 w-5" />
-            </Button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="relative">
+                  {itemCount > 0 && (
+                    <span className="absolute top-0 right-0 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground transform translate-x-1/2 -translate-y-1/2">
+                      {itemCount}
+                    </span>
+                  )}
+                  <ShoppingCart className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="w-[400px] sm:w-[540px] flex flex-col">
+                <CartSheetContent />
+              </SheetContent>
+            </Sheet>
             <div className="md:hidden">
               <Sheet>
                 <SheetTrigger asChild>
