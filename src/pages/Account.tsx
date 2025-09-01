@@ -6,19 +6,21 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { showError, showSuccess } from "@/utils/toast";
 import { useEffect, useState } from "react";
+import { Zap, Copy, Check, Upload, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const AccountPage = () => {
   const { user } = useAuth();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [avatarUrl, setAvatarUrl] = useState('');
   const [loading, setLoading] = useState(true);
+  const [avatarUrl, setAvatarUrl] = useState('');
   const [uploading, setUploading] = useState(false);
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [updatingPassword, setUpdatingPassword] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -30,7 +32,7 @@ const AccountPage = () => {
           .eq('id', user.id)
           .single();
 
-        if (error && error.code !== 'PGRST116') { // PGRST116 means no rows found
+        if (error && error.code !== 'PGRST116') {
           console.error('Error fetching profile:', error);
           showError("Erreur lors de la récupération de votre profil.");
         } else if (data) {
@@ -45,40 +47,71 @@ const AccountPage = () => {
     fetchProfile();
   }, [user]);
 
-  const uploadAvatar = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const generatePassword = () => {
+    const length = 12;
+    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?";
+    let password = "";
+    
+    password += "ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(Math.floor(Math.random() * 26));
+    password += "abcdefghijklmnopqrstuvwxyz".charAt(Math.floor(Math.random() * 26));
+    password += "0123456789".charAt(Math.floor(Math.random() * 10));
+    password += "!@#$%^&*()_+-=[]{}|;:,.<>?".charAt(Math.floor(Math.random() * 26));
+    
+    for (let i = password.length; i < length; i++) {
+      password += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+    
+    password = password.split('').sort(() => Math.random() - 0.5).join('');
+    
+    setNewPassword(password);
+    setCopied(false);
+  };
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(newPassword);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      showError("Impossible de copier le mot de passe");
+    }
+  };
+
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!user) return;
     try {
       setUploading(true);
-
+      
       if (!event.target.files || event.target.files.length === 0) {
-        throw new Error('Vous devez sélectionner une image à télécharger.');
+        throw new Error('Vous devez sélectionner une image.');
       }
 
       const file = event.target.files[0];
       const fileExt = file.name.split('.').pop();
-      const filePath = `${user.id}/${Date.now()}.${fileExt}`;
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+      const filePath = `${fileName}`;
 
+      // Upload image to Supabase Storage
       const { error: uploadError } = await supabase.storage
         .from('avatars')
-        .upload(filePath, file);
+        .upload(filePath, file, { upsert: true });
 
       if (uploadError) {
         throw uploadError;
       }
 
-      const { data } = supabase.storage
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
         .from('avatars')
         .getPublicUrl(filePath);
 
-      if (!data.publicUrl) {
-        throw new Error("Impossible d'obtenir l'URL publique de l'avatar.");
-      }
-      
-      const publicUrl = data.publicUrl;
-
+      // Update profile with new avatar URL
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({ avatar_url: publicUrl, updated_at: new Date().toISOString() })
+        .update({ 
+          avatar_url: publicUrl,
+          updated_at: new Date().toISOString() 
+        })
         .eq('id', user.id);
 
       if (updateError) {
@@ -87,11 +120,51 @@ const AccountPage = () => {
 
       setAvatarUrl(publicUrl);
       showSuccess("Avatar mis à jour avec succès !");
+      
     } catch (error: any) {
       console.error('Error uploading avatar:', error);
       showError(error.message || "Erreur lors du téléchargement de l'avatar.");
     } finally {
       setUploading(false);
+    }
+  };
+
+  const removeAvatar = async () => {
+    if (!user) return;
+    try {
+      if (!avatarUrl) return;
+
+      // Extract file path from URL
+      const filePath = avatarUrl.substring(avatarUrl.indexOf('/avatars/') + 9);
+
+      // Delete from storage
+      const { error: deleteError } = await supabase.storage
+        .from('avatars')
+        .remove([filePath]);
+
+      if (deleteError) {
+        console.error('Delete error:', deleteError);
+      }
+
+      // Update profile to remove avatar URL
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ 
+          avatar_url: null,
+          updated_at: new Date().toISOString() 
+        })
+        .eq('id', user.id);
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      setAvatarUrl('');
+      showSuccess("Avatar supprimé avec succès !");
+      
+    } catch (error: any) {
+      console.error('Error removing avatar:', error);
+      showError(error.message || "Erreur lors de la suppression de l'avatar.");
     }
   };
 
@@ -157,6 +230,10 @@ const AccountPage = () => {
     setUpdatingPassword(false);
   };
 
+  const getInitials = () => {
+    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase() || 'U';
+  };
+
   if (loading) {
     return <div className="container mx-auto py-12 text-center">Chargement du profil...</div>;
   }
@@ -171,25 +248,52 @@ const AccountPage = () => {
           </CardHeader>
           <form onSubmit={handleUpdateProfile}>
             <CardContent className="space-y-6">
-               <div className="flex items-center space-x-6">
-                <Avatar className="h-24 w-24">
-                  <AvatarImage src={avatarUrl || 'https://www.svgrepo.com/show/492676/avatar-boy.svg'} alt="User avatar" />
-                  <AvatarFallback>
-                    {firstName?.charAt(0).toUpperCase()}{lastName?.charAt(0).toUpperCase()}
+              {/* Avatar Section */}
+              <div className="flex items-center gap-6">
+                <Avatar className="h-20 w-20">
+                  <AvatarImage src={avatarUrl} />
+                  <AvatarFallback className="text-lg">
+                    {getInitials()}
                   </AvatarFallback>
                 </Avatar>
-                <div className="w-full space-y-2">
-                    <Label htmlFor="avatarUpload">Changer d'avatar</Label>
-                    <Input 
-                        id="avatarUpload" 
+                <div className="space-y-3">
+                  <div className="flex gap-2">
+                    <Label htmlFor="avatar-upload" className="cursor-pointer">
+                      <Button type="button" variant="outline" size="sm" asChild>
+                        <span className="flex items-center gap-2">
+                          <Upload className="h-4 w-4" />
+                          {uploading ? 'Téléchargement...' : 'Changer avatar'}
+                        </span>
+                      </Button>
+                      <Input
+                        id="avatar-upload"
                         type="file"
-                        accept="image/png, image/jpeg"
-                        onChange={uploadAvatar}
+                        accept="image/*"
+                        onChange={handleAvatarUpload}
+                        className="hidden"
                         disabled={uploading}
-                    />
-                    {uploading && <p className="text-sm text-gray-500">Téléchargement en cours...</p>}
+                      />
+                    </Label>
+                    {avatarUrl && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={removeAvatar}
+                        disabled={uploading}
+                        className="flex items-center gap-2"
+                      >
+                        <X className="h-4 w-4" />
+                        Supprimer
+                      </Button>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    JPG, PNG ou GIF. Max 5MB.
+                  </p>
                 </div>
               </div>
+
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input id="email" type="email" value={user?.email || ''} disabled />
@@ -223,8 +327,45 @@ const AccountPage = () => {
                 <Input id="currentPassword" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="newPassword">Nouveau mot de passe</Label>
-                <Input id="newPassword" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="newPassword">Nouveau mot de passe</Label>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={generatePassword}
+                    className="flex items-center gap-2"
+                  >
+                    <Zap className="h-4 w-4" />
+                    Générer
+                  </Button>
+                </div>
+                <div className="flex gap-2">
+                  <Input
+                    id="newPassword"
+                    type="text"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                    className="flex-1"
+                  />
+                  {newPassword && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={copyToClipboard}
+                      className="shrink-0"
+                    >
+                      {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                    </Button>
+                  )}
+                </div>
+                {newPassword && (
+                  <p className="text-xs text-muted-foreground">
+                    Force du mot de passe: {newPassword.length >= 12 ? 'Fort' : newPassword.length >= 8 ? 'Moyen' : 'Faible'}
+                  </p>
+                )}
               </div>
             </CardContent>
             <CardFooter>
