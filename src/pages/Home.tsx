@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/ProductCard";
 import type { Product } from "@/types";
+import HeroSection from "@/components/HeroSection";
 
 const featuredProducts: Product[] = [
   {
@@ -41,16 +41,7 @@ const Home = () => {
   return (
     <div className="bg-white">
       {/* Hero Section */}
-      <section className="relative bg-gray-900 text-white">
-        <img src="https://placehold.co/1920x800/333333/FFFFFF?text=Gusto+Glub+Taralli" alt="Taralli background" className="absolute inset-0 w-full h-full object-cover opacity-50" />
-        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-32 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight">The Taste of Italy, Made in Tunisia</h1>
-          <p className="mt-4 text-lg md:text-xl max-w-3xl mx-auto">
-            Discover our delicious, handcrafted taralli, the perfect snack for any occasion.
-          </p>
-          <Button size="lg" className="mt-8">Shop Now</Button>
-        </div>
-      </section>
+      <HeroSection />
 
       {/* Featured Products Section */}
       <section className="py-16 sm:py-24">
