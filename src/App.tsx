@@ -14,35 +14,45 @@ import { CartProvider } from "./contexts/CartContext";
 import AccountPage from "./pages/Account";
 import OrdersPage from "./pages/Orders";
 import SettingsPage from "./pages/Settings";
+import { AuthProvider } from "./contexts/AuthContext";
+import LoginPage from "./pages/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <CartProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <div className="flex flex-col min-h-screen bg-gray-50">
-            <Header />
-            <main className="flex-grow">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/products" element={<ProductsPage />} />
-                <Route path="/account" element={<AccountPage />} />
-                <Route path="/orders" element={<OrdersPage />} />
-                <Route path="/settings" element={<SettingsPage />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </main>
-            <Footer />
-          </div>
-        </BrowserRouter>
-      </CartProvider>
+      <BrowserRouter>
+        <AuthProvider>
+          <CartProvider>
+            <Toaster />
+            <Sonner />
+            <div className="flex flex-col min-h-screen bg-gray-50">
+              <Header />
+              <main className="flex-grow">
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/products" element={<ProductsPage />} />
+                  <Route path="/login" element={<LoginPage />} />
+
+                  <Route element={<ProtectedRoute />}>
+                    <Route path="/account" element={<AccountPage />} />
+                    <Route path="/orders" element={<OrdersPage />} />
+                    <Route path="/settings" element={<SettingsPage />} />
+                  </Route>
+
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </main>
+              <Footer />
+            </div>
+          </CartProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );
