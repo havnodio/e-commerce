@@ -21,3 +21,12 @@ export interface Order {
   status: string;
   total: number;
 }
+
+export interface OrderItemDetail {
+  quantity: number;
+  price: number;
+  products: {
+    name: string;
+    image_url: string;
+  };
+}
