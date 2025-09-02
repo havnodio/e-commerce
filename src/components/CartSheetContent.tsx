@@ -4,9 +4,46 @@ import { SheetHeader, SheetTitle, SheetFooter, SheetDescription } from '@/compon
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Trash2, Plus, Minus } from 'lucide-react';
 import { Separator } from './ui/separator';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { showError, showSuccess } from '@/utils/toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 const CartSheetContent = () => {
-  const { cartItems, removeFromCart, addToCart, decrementQuantity, cartTotal, itemCount } = useCart();
+  const { cartItems, removeFromCart, addToCart, decrementQuantity, cartTotal, itemCount, clearCart } = useCart();
+  const { session } = useAuth();
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const navigate = useNavigate();
+
+  const handleCheckout = async () => {
+    if (!session) {
+      showError("Vous devez être connecté pour passer une commande.");
+      navigate('/login');
+      return;
+    }
+
+    setIsCheckingOut(true);
+    try {
+      const { error } = await supabase.functions.invoke('create-order', {
+        body: { items: cartItems },
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      showSuccess('Votre commande a été passée avec succès !');
+      clearCart();
+      navigate('/orders');
+
+    } catch (error: any) {
+      console.error('Checkout error:', error);
+      showError(error.message || 'Une erreur est survenue lors du passage de la commande.');
+    } finally {
+      setIsCheckingOut(false);
+    }
+  };
 
   return (
     <>
@@ -28,7 +65,7 @@ const CartSheetContent = () => {
                 {cartItems.map(item => (
                   <div key={item.id} className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <img src={item.imageUrl} alt={item.name} className="w-16 h-16 object-cover rounded-md" />
+                      <img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover rounded-md" />
                       <div>
                         <p className="font-semibold">{item.name}</p>
                         <p className="text-sm text-muted-foreground">{item.price.toFixed(2)} DT</p>
@@ -57,7 +94,9 @@ const CartSheetContent = () => {
                   <span>Total</span>
                   <span>{cartTotal.toFixed(2)} DT</span>
                 </div>
-                <Button className="w-full" size="lg">Passer à la caisse</Button>
+                <Button className="w-full" size="lg" onClick={handleCheckout} disabled={isCheckingOut}>
+                  {isCheckingOut ? 'Traitement...' : 'Passer à la caisse'}
+                </Button>
               </div>
             </SheetFooter>
           </>

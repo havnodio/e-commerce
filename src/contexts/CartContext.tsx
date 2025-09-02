@@ -7,6 +7,7 @@ interface CartContextType {
   addToCart: (product: Product) => void;
   removeFromCart: (productId: number) => void;
   decrementQuantity: (productId: number) => void;
+  clearCart: () => void;
   itemCount: number;
   cartTotal: number;
 }
@@ -26,8 +27,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             : item
         );
       } else {
-        const { description, category, ...cartProduct } = product;
-        return [...prevItems, { ...cartProduct, quantity: 1 }];
+        const { description, category, ...rest } = product;
+        const newCartItem: CartItem = {
+          ...rest,
+          quantity: 1,
+        };
+        return [...prevItems, newCartItem];
       }
     });
     showSuccess(`${product.name} a été ajouté au panier !`);
@@ -40,18 +45,20 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           if (item.quantity > 1) {
             return { ...item, quantity: item.quantity - 1 };
           }
-          // Si la quantité est 1, on ne fait rien pour l'instant, l'utilisateur doit utiliser le bouton supprimer.
-          // On pourrait aussi le supprimer directement.
           return item;
         }
         return item;
-      }).filter(item => item.quantity > 0); // S'assure de retirer les articles si la quantité tombe à 0
+      }).filter(item => item.quantity > 0);
     });
   };
 
   const removeFromCart = (productId: number) => {
     setCartItems(prevItems => prevItems.filter(item => item.id !== productId));
     showError('Article supprimé du panier.');
+  };
+
+  const clearCart = () => {
+    setCartItems([]);
   };
 
   const itemCount = useMemo(() => {
@@ -63,7 +70,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [cartItems]);
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, decrementQuantity, itemCount, cartTotal }}>
+    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, decrementQuantity, clearCart, itemCount, cartTotal }}>
       {children}
     </CartContext.Provider>
   );

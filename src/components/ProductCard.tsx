@@ -15,7 +15,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     <Card className="w-full overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
       <CardHeader className="p-0">
         <img
-          src={product.imageUrl}
+          src={product.image_url}
           alt={product.name}
           className="w-full h-48 object-cover"
         />
