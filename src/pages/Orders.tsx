@@ -22,36 +22,56 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Order } from "@/types";
 import { format } from 'date-fns';
 import OrderDetails from "@/components/OrderDetails";
+import { Link, useNavigate } from "react-router-dom";
+import { showError, showSuccess } from "@/utils/toast";
 
 const OrdersPage = () => {
   const { user } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const navigate = useNavigate();
+
+  const fetchOrders = async () => {
+    if (!user) {
+      setLoading(false);
+      return;
+    };
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error("Error fetching orders:", error);
+    } else if (data) {
+      setOrders(data as Order[]);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      if (!user) {
-        setLoading(false);
-        return;
-      };
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('orders')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error("Error fetching orders:", error);
-      } else if (data) {
-        setOrders(data as Order[]);
-      }
-      setLoading(false);
-    };
-
     fetchOrders();
   }, [user]);
+
+  const handleCancelOrder = async (orderId: string) => {
+    if (!window.confirm("Are you sure you want to cancel this order?")) return;
+
+    try {
+      const { error } = await supabase.functions.invoke('cancel-order', {
+        body: { orderId },
+      });
+
+      if (error) throw new Error(error.message);
+
+      showSuccess("Order cancelled successfully.");
+      fetchOrders(); // Refresh the orders list
+    } catch (error: any) {
+      showError(error.message || "Failed to cancel order.");
+    }
+  };
 
   if (loading) {
     return <div className="container mx-auto py-12 text-center">Loading orders...</div>;
@@ -87,18 +107,29 @@ const OrdersPage = () => {
                       <TableCell>
                         <Badge variant={
                           order.status === 'Delivered' ? 'default' : 
-                          order.status === 'Shipped' ? 'secondary' : 'outline'
+                          order.status === 'Shipped' ? 'secondary' : 
+                          order.status === 'Cancelled' ? 'destructive' : 'outline'
                         }>
                           {order.status}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">{Number(order.total).toFixed(2)} DT</TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-right space-x-2">
                         <DialogTrigger asChild>
                           <Button variant="outline" size="sm" onClick={() => setSelectedOrder(order)}>
                             View Details
                           </Button>
                         </DialogTrigger>
+                        {order.status === 'Pending' && (
+                          <>
+                            <Button asChild variant="secondary" size="sm">
+                              <Link to={`/orders/${order.id}/edit`}>Edit</Link>
+                            </Button>
+                            <Button variant="destructive" size="sm" onClick={() => handleCancelOrder(order.id)}>
+                              Cancel
+                            </Button>
+                          </>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}

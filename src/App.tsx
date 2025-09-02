@@ -16,6 +16,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import LoginPage from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
+import EditOrderPage from "./pages/EditOrder";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ const App = () => (
                 <Route element={<ProtectedRoute />}>
                   <Route path="/account" element={<AccountPage />} />
                   <Route path="/orders" element={<OrdersPage />} />
+                  <Route path="/orders/:orderId/edit" element={<EditOrderPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
                 </Route>
 
