@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Twitter } from 'lucide-react';
+import { Facebook, Instagram } from 'lucide-react';
 
 export const Footer = () => {
   return (
@@ -20,9 +20,8 @@ export const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold text-gray-800">Follow Us</h3>
             <div className="flex mt-2 space-x-4">
-              <a href="#" className="text-gray-600 hover:text-gray-900"><Facebook /></a>
-              <a href="#" className="text-gray-600 hover:text-gray-900"><Instagram /></a>
-              <a href="#" className="text-gray-600 hover:text-gray-900"><Twitter /></a>
+              <a href="https://www.facebook.com/GustoClubOfficial/" className="text-gray-600 hover:text-gray-900"><Facebook /></a>
+              <a href="https://www.instagram.com/gustoclubofficial/" className="text-gray-600 hover:text-gray-900"><Instagram /></a>
             </div>
           </div>
         </div>
