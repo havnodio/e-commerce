@@ -1,4 +1,4 @@
-import { ShoppingCart, User, Search, Menu, LogOut, Settings as SettingsIcon, User as UserIcon, CreditCard } from 'lucide-react';
+import { ShoppingCart, User, Search, Menu, LogOut, Settings as SettingsIcon, User as UserIcon, CreditCard, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
@@ -10,17 +10,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Badge } from "@/components/ui/badge";
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import CartSheetContent from './CartSheetContent';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { showError, showSuccess } from '@/utils/toast';
+import { useState } from 'react'; // Import useState
 
 export const Header = () => {
   const { itemCount } = useCart();
   const { session } = useAuth();
   const navigate = useNavigate();
+  // Placeholder for admin check. In a real application, this would come from user roles in your database.
+  const [isAdmin, setIsAdmin] = useState(true); 
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -64,6 +69,27 @@ export const Header = () => {
               <Search className="h-5 w-5" />
             </Button>
             
+            {isAdmin && ( // Only show message icon if user is an admin (placeholder)
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="icon" className="relative">
+                    <MessageSquare className="h-5 w-5" />
+                    {/* Placeholder for unread message count */}
+                    <Badge variant="destructive" className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-xs">
+                      1
+                    </Badge>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80 p-4" align="end">
+                  <div className="font-semibold mb-2">New Message Response</div>
+                  <p className="text-sm text-muted-foreground">
+                    You have a new response from a customer regarding their inquiry.
+                  </p>
+                  <Button size="sm" className="mt-3 w-full">View All Messages</Button>
+                </PopoverContent>
+              </Popover>
+            )}
+
             {session ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
