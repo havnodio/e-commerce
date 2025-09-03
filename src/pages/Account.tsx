@@ -13,6 +13,7 @@ const AccountPage = () => {
   const { user } = useAuth();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState(''); // New state for phone number
   const [loading, setLoading] = useState(true);
   const [avatarUrl, setAvatarUrl] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -28,7 +29,7 @@ const AccountPage = () => {
         setLoading(true);
         const { data, error } = await supabase
           .from('profiles')
-          .select('first_name, last_name, avatar_url')
+          .select('first_name, last_name, avatar_url, phone_number') // Fetch phone_number
           .eq('id', user.id)
           .single();
 
@@ -39,6 +40,7 @@ const AccountPage = () => {
           setFirstName(data.first_name || '');
           setLastName(data.last_name || '');
           setAvatarUrl(data.avatar_url || '');
+          setPhoneNumber(data.phone_number || ''); // Set phone number state
         }
         setLoading(false);
       }
@@ -172,11 +174,18 @@ const AccountPage = () => {
     e.preventDefault();
     if (!user) return;
 
+    // Phone number validation
+    if (phoneNumber && !/^\d{8}$/.test(phoneNumber)) {
+      showError("Le numéro de téléphone doit contenir exactement 8 chiffres.");
+      return;
+    }
+
     const { error } = await supabase
       .from('profiles')
       .update({ 
         first_name: firstName, 
         last_name: lastName, 
+        phone_number: phoneNumber, // Save phone number
         updated_at: new Date().toISOString() 
       })
       .eq('id', user.id);
@@ -307,6 +316,21 @@ const AccountPage = () => {
                   <Label htmlFor="lastName">Nom</Label>
                   <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Entrez votre nom" />
                 </div>
+              </div>
+              {/* New Phone Number Field */}
+              <div className="space-y-2">
+                <Label htmlFor="phoneNumber">Numéro de téléphone</Label>
+                <Input
+                  id="phoneNumber"
+                  type="tel" // Use type="tel" for phone numbers
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="Entrez votre numéro de téléphone (8 chiffres)"
+                  maxLength={8} // Limit input to 8 characters
+                />
+                {phoneNumber && !/^\d{8}$/.test(phoneNumber) && (
+                  <p className="text-sm text-red-500">Le numéro de téléphone doit contenir exactement 8 chiffres.</p>
+                )}
               </div>
             </CardContent>
             <CardFooter>
