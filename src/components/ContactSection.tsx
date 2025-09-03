@@ -1,16 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { showSuccess, showError } from '@/utils/toast';
+import { useAuth } from '@/contexts/AuthContext'; // Import useAuth
 
 const ContactSection = () => {
+  const { user } = useAuth(); // Get the current user from AuthContext
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isProfileLoading, setIsProfileLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (user) {
+        setIsProfileLoading(true);
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('first_name, last_name')
+          .eq('id', user.id)
+          .single();
+
+        if (error && error.code !== 'PGRST116') { // PGRST116 means no row found
+          console.error('Error fetching user profile:', error);
+          showError("Erreur lors de la récupération de votre profil.");
+        } else if (data) {
+          setName(`${data.first_name || ''} ${data.last_name || ''}`.trim());
+        }
+        setEmail(user.email || ''); // Always set email from user object if available
+      } else {
+        setName('');
+        setEmail('');
+      }
+      setIsProfileLoading(false);
+    };
+
+    fetchUserProfile();
+  }, [user]); // Re-run when user changes
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,8 +62,7 @@ const ContactSection = () => {
       }
 
       showSuccess("Votre message a été envoyé avec succès !");
-      setName('');
-      setEmail('');
+      // Clear message only, name and email might be pre-filled
       setMessage('');
     } catch (error: any) {
       console.error("Error sending message:", error);
@@ -65,6 +94,7 @@ const ContactSection = () => {
                 value={name} 
                 onChange={(e) => setName(e.target.value)} 
                 required 
+                disabled={!!user && !isProfileLoading} // Disable if user is logged in and profile loaded
               />
               <Input 
                 type="email" 
@@ -72,6 +102,7 @@ const ContactSection = () => {
                 value={email} 
                 onChange={(e) => setEmail(e.target.value)} 
                 required 
+                disabled={!!user && !isProfileLoading} // Disable if user is logged in and profile loaded
               />
               <Textarea 
                 placeholder="Your Message" 
@@ -79,7 +110,7 @@ const ContactSection = () => {
                 onChange={(e) => setMessage(e.target.value)} 
                 required 
               />
-              <Button type="submit" disabled={isSubmitting}>
+              <Button type="submit" disabled={isSubmitting || isProfileLoading}>
                 {isSubmitting ? 'Envoi en cours...' : 'Send Message'}
               </Button>
             </form>
