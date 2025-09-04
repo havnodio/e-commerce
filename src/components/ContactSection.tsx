@@ -114,6 +114,13 @@ const ContactSection = () => {
                 {isSubmitting ? 'Envoi en cours...' : 'Send Message'}
               </Button>
             </form>
+            <div className="space-y-2 text-muted-foreground mt-8">
+              <h3 className="text-xl font-bold text-primary">Company Information</h3>
+              <p><strong>Emetteur:</strong> TARALLI PRODUCTION</p>
+              <p><strong>Email:</strong> Taralliproduction@gmail.com</p>
+              <p><strong>Address:</strong> 5 LAHMAM ROUTE SIDI SAAD MORNAG</p>
+              <p><strong>Tel:</strong> 31413313</p>
+            </div>
           </div>
           <div className="flex items-center justify-center">
             <Card className="w-full max-w-md">
