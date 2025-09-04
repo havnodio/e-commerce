@@ -11,7 +11,7 @@ const AboutSection = () => {
               Gusto Club Tunisie puise son inspiration dans la richesse des saveurs méditerranéennes et l’authenticité du savoir-faire tunisien. Avec des ingrédients simples mais d’une qualité irréprochable, et en respectant des traditions transmises de génération en génération, nous créons des taralli qui transcendent la simple gourmandise pour offrir une véritable expérience gustative.
             </p>
             <p className="text-muted-foreground mb-8">
-              Our values are simple: Quality, Tradition, and Passion. Every batch is handmade with care, ensuring a delicious, crunchy bite every time.
+              Nos valeurs sont simples : Qualité, Tradition et Passion. Chaque fournée est façonnée à la main avec soin, pour garantir à chaque bouchée une expérience croquante et savoureuse.
             </p>
             <div className="space-y-2 text-muted-foreground">
               <h3 className="text-xl font-bold text-primary">Contact Information</h3>
