@@ -6,10 +6,12 @@ import { useEffect, useState } from "react";
 import { Product } from "@/types";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 
 const Home = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation(); // Initialize useTranslation
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -38,7 +40,7 @@ const Home = () => {
       <section className="py-16 sm:py-24">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 text-center mb-12">
-            Our Featured Products
+            {t('home_page.featured_products')}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {loading ? (

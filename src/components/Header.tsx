@@ -17,27 +17,33 @@ import CartSheetContent from './CartSheetContent';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { showError, showSuccess } from '@/utils/toast';
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 
 export const Header = () => {
   const { itemCount } = useCart();
   const { session } = useAuth();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation(); // Initialize useTranslation
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
-      showError("Erreur lors de la déconnexion.");
+      showError(t("account_page.logout_error")); // Use translation
     } else {
-      showSuccess("Vous avez été déconnecté.");
+      showSuccess(t("account_page.logout_success")); // Use translation
       navigate('/');
     }
   };
 
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
+
   const navItems = [
-    { name: 'Home', href: '/' },
-    { name: 'Products', href: '/products' },
-    { name: 'About Us', href: '/about' },
-    { name: 'Contact', href: '/contact' },
+    { name: t('header.home'), href: '/' },
+    { name: t('header.products'), href: '/products' },
+    { name: t('header.about_us'), href: '/about' },
+    { name: t('header.contact'), href: '/contact' },
   ];
 
   return (
@@ -46,7 +52,7 @@ export const Header = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="text-2xl font-bold text-gray-800">
-              Gusto Glub
+              {t('login_page.gusto_glub')}
             </Link>
           </div>
           <nav className="hidden md:flex md:space-x-8">
@@ -65,6 +71,23 @@ export const Header = () => {
               <Search className="h-5 w-5" />
             </Button>
             
+            {/* Language Switcher */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  {i18n.language.toUpperCase()}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-24" align="end">
+                <DropdownMenuItem onClick={() => changeLanguage('en')}>
+                  English
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => changeLanguage('fr')}>
+                  Français
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             {session ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -73,38 +96,38 @@ export const Header = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="end">
-                  <DropdownMenuLabel>Mon Compte</DropdownMenuLabel>
+                  <DropdownMenuLabel>{t('header.my_account')}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
                     <DropdownMenuItem asChild>
                       <Link to="/account">
                         <UserIcon className="mr-2 h-4 w-4" />
-                        <span>Profil</span>
+                        <span>{t('header.profile')}</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/orders">
                         <CreditCard className="mr-2 h-4 w-4" />
-                        <span>Mes Commandes</span>
+                        <span>{t('header.my_orders')}</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/settings">
                         <SettingsIcon className="mr-2 h-4 w-4" />
-                        <span>Paramètres</span>
+                        <span>{t('header.settings')}</span>
                       </Link>
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span>Déconnexion</span>
+                    <span>{t('header.logout')}</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <Button asChild variant="ghost" className="hidden md:inline-flex">
-                <Link to="/login">Connexion</Link>
+                <Link to="/login">{t('header.login')}</Link>
               </Button>
             )}
 
@@ -143,7 +166,7 @@ export const Header = () => {
                     ))}
                      {!session && (
                       <Link to="/login" className="text-lg text-gray-600 hover:text-gray-900 font-medium">
-                        Connexion
+                        {t('header.login')}
                       </Link>
                     )}
                   </nav>
