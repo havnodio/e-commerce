@@ -8,7 +8,7 @@ const AboutSection = () => {
           <div>
             <h2 className="text-3xl font-bold text-primary mb-4">Our Story</h2>
             <p className="mb-4 text-muted-foreground">
-              Gusto Club Tunisie was born from a love for authentic Mediterranean flavors and a passion for Tunisian craftsmanship. We believe in simple, high-quality ingredients and time-honored traditions to create taralli that are not just a snack, but an experience.
+              Gusto Club Tunisie puise son inspiration dans la richesse des saveurs méditerranéennes et l’authenticité du savoir-faire tunisien. Avec des ingrédients simples mais d’une qualité irréprochable, et en respectant des traditions transmises de génération en génération, nous créons des taralli qui transcendent la simple gourmandise pour offrir une véritable expérience gustative.
             </p>
             <p className="text-muted-foreground mb-8">
               Our values are simple: Quality, Tradition, and Passion. Every batch is handmade with care, ensuring a delicious, crunchy bite every time.
