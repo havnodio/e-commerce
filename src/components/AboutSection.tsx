@@ -10,9 +10,16 @@ const AboutSection = () => {
             <p className="mb-4 text-muted-foreground">
               Gusto Club Tunisie was born from a love for authentic Mediterranean flavors and a passion for Tunisian craftsmanship. We believe in simple, high-quality ingredients and time-honored traditions to create taralli that are not just a snack, but an experience.
             </p>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground mb-8">
               Our values are simple: Quality, Tradition, and Passion. Every batch is handmade with care, ensuring a delicious, crunchy bite every time.
             </p>
+            <div className="space-y-2 text-muted-foreground">
+              <h3 className="text-xl font-bold text-primary">Contact Information</h3>
+              <p><strong>Emetteur:</strong> TARALLI PRODUCTION</p>
+              <p><strong>Email:</strong> Taralliproduction@gmail.com</p>
+              <p><strong>Address:</strong> 5 LAHMAM ROUTE SIDI SAAD MORNAG</p>
+              <p><strong>Tel:</strong> 31413313</p>
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <img src="https://i.imgur.com/izhQn5F.png" alt="Traditional Tunisian pottery" className="rounded-lg shadow-md aspect-square object-cover" />
