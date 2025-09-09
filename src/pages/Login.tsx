@@ -33,6 +33,7 @@ const LoginPage = () => {
           </div>
           <Auth
             supabaseClient={supabase}
+            providers={['google']} {/* This line correctly enables the Google button */}
             appearance={{
               theme: ThemeSupa,
               variables: {
@@ -48,7 +49,6 @@ const LoginPage = () => {
                 },
               },
             }}
-            providers={['google']}
             theme="light"
             localization={{
               variables: {
