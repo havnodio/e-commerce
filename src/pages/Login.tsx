@@ -1,9 +1,9 @@
+import React, { useEffect } from 'react'; // Added React import
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from '@/integrations/supabase/client';
 import { Navigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useEffect } from 'react';
 
 const LoginPage = () => {
   const { session } = useAuth();
@@ -33,7 +33,7 @@ const LoginPage = () => {
           </div>
           <Auth
             supabaseClient={supabase}
-            providers={['google']} {/* This line correctly enables the Google button */}
+            providers={['google']}
             appearance={{
               theme: ThemeSupa,
               variables: {
