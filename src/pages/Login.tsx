@@ -1,20 +1,19 @@
-import React, { useEffect } from 'react'; // Added React import
+import React, { useEffect } from 'react';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from '@/integrations/supabase/client';
-import { Navigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { useAuth } from '@/contexts/AuthContext';
 
 const LoginPage = () => {
   const { session } = useAuth();
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
-    // Optional: Add any logic needed on component mount or session change
-  }, [session]);
-
-  if (session) {
-    return <Navigate to="/" />;
-  }
+    if (session) {
+      navigate('/'); // Redirect to home page if session exists
+    }
+  }, [session, navigate]); // Depend on session and navigate
 
   return (
     <div className="min-h-screen flex items-stretch">
