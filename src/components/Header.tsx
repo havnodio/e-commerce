@@ -165,9 +165,14 @@ export const Header = () => {
                       </Link>
                     ))}
                      {!session && (
-                      <Link to="/login" className="text-lg text-gray-600 hover:text-gray-900 font-medium">
-                        {t('header.login')}
-                      </Link>
+                      <>
+                        <Link to="/login" className="text-lg text-gray-600 hover:text-gray-900 font-medium">
+                          {t('header.login')}
+                        </Link>
+                        <Link to="/login" className="text-lg text-gray-600 hover:text-gray-900 font-medium">
+                          {t('header.signup')}
+                        </Link>
+                      </>
                     )}
                   </nav>
                 </SheetContent>

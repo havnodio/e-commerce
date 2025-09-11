@@ -10,7 +10,8 @@
     "my_orders": "Mes Commandes",
     "settings": "Paramètres",
     "logout": "Déconnexion",
-    "login": "Connexion"
+    "login": "Connexion",
+    "signup": "S'inscrire"
   },
   "footer": {
     "title": "Gusto Glub Taralli",
@@ -195,5 +196,18 @@
     "checkout_error": "Une erreur est survenue lors du passage de la commande.",
     "item_added_success": "{{productName}} a été ajouté au panier !",
     "item_removed": "Article supprimé du panier."
+  },
+  "sign_in": {
+    "social_provider_text": "Se connecter avec {{provider}}",
+    "link_text": "Vous avez déjà un compte ? Connectez-vous"
+  },
+  "sign_up": {
+    "button_label": "Créer un compte",
+    "social_provider_text": "S'inscrire avec {{provider}}",
+    "link_text": "Vous n'avez pas de compte ? Inscrivez-vous"
+  },
+  "forgotten_password": {
+    "button_label": "Envoyer les instructions",
+    "link_text": "Mot de passe oublié ?"
   }
 }
