@@ -6,14 +6,31 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { showError, showSuccess } from "@/utils/toast";
 import { useEffect, useState } from "react";
-import { Zap, Copy, Check, Upload, X } from "lucide-react";
+import { Zap, Copy, Check, Upload, X, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 
 const AccountPage = () => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState(''); // New state for phone number
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [loading, setLoading] = useState(true);
   const [avatarUrl, setAvatarUrl] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -29,25 +46,25 @@ const AccountPage = () => {
         setLoading(true);
         const { data, error } = await supabase
           .from('profiles')
-          .select('first_name, last_name, avatar_url, phone_number') // Fetch phone_number
+          .select('first_name, last_name, avatar_url, phone_number')
           .eq('id', user.id)
           .single();
 
         if (error && error.code !== 'PGRST116') {
           console.error('Error fetching profile:', error);
-          showError("Erreur lors de la récupération de votre profil.");
+          showError(t("account_page.profile_fetch_error"));
         } else if (data) {
           setFirstName(data.first_name || '');
           setLastName(data.last_name || '');
           setAvatarUrl(data.avatar_url || '');
-          setPhoneNumber(data.phone_number || ''); // Set phone number state
+          setPhoneNumber(data.phone_number || '');
         }
         setLoading(false);
       }
     };
 
     fetchProfile();
-  }, [user]);
+  }, [user, t]);
 
   const generatePassword = () => {
     const length = 12;
@@ -75,7 +92,7 @@ const AccountPage = () => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      showError("Impossible de copier le mot de passe");
+      showError(t("account_page.copy_failed"));
     }
   };
 
@@ -85,15 +102,25 @@ const AccountPage = () => {
       setUploading(true);
       
       if (!event.target.files || event.target.files.length === 0) {
-        throw new Error('Vous devez sélectionner une image.');
+        throw new Error(t('account_page.select_image_error'));
       }
 
       const file = event.target.files[0];
+
+      // Client-side validation for file type and size
+      if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+        showError(t('account_page.invalid_file_type'));
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        showError(t('account_page.file_size_exceeded'));
+        return;
+      }
+
       const fileExt = file.name.split('.').pop();
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;
       const filePath = `${fileName}`;
 
-      // Upload image to Supabase Storage
       const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(filePath, file, { upsert: true });
@@ -102,12 +129,10 @@ const AccountPage = () => {
         throw uploadError;
       }
 
-      // Get public URL
       const { data: { publicUrl } } = supabase.storage
         .from('avatars')
         .getPublicUrl(filePath);
 
-      // Update profile with new avatar URL
       const { error: updateError } = await supabase
         .from('profiles')
         .update({ 
@@ -121,11 +146,11 @@ const AccountPage = () => {
       }
 
       setAvatarUrl(publicUrl);
-      showSuccess("Avatar mis à jour avec succès !");
+      showSuccess(t("account_page.avatar_updated_success"));
       
     } catch (error: any) {
       console.error('Error uploading avatar:', error);
-      showError(error.message || "Erreur lors du téléchargement de l'avatar.");
+      showError(error.message || t("account_page.avatar_upload_error"));
     } finally {
       setUploading(false);
     }
@@ -136,10 +161,8 @@ const AccountPage = () => {
     try {
       if (!avatarUrl) return;
 
-      // Extract file path from URL
       const filePath = avatarUrl.substring(avatarUrl.indexOf('/avatars/') + 9);
 
-      // Delete from storage
       const { error: deleteError } = await supabase.storage
         .from('avatars')
         .remove([filePath]);
@@ -148,7 +171,6 @@ const AccountPage = () => {
         console.error('Delete error:', deleteError);
       }
 
-      // Update profile to remove avatar URL
       const { error: updateError } = await supabase
         .from('profiles')
         .update({ 
@@ -162,11 +184,11 @@ const AccountPage = () => {
       }
 
       setAvatarUrl('');
-      showSuccess("Avatar supprimé avec succès !");
+      showSuccess(t("account_page.avatar_removed_success"));
       
     } catch (error: any) {
       console.error('Error removing avatar:', error);
-      showError(error.message || "Erreur lors de la suppression de l'avatar.");
+      showError(error.message || t("account_page.avatar_remove_error"));
     }
   };
 
@@ -174,9 +196,8 @@ const AccountPage = () => {
     e.preventDefault();
     if (!user) return;
 
-    // Phone number validation
     if (phoneNumber && !/^\d{8}$/.test(phoneNumber)) {
-      showError("Le numéro de téléphone doit contenir exactement 8 chiffres.");
+      showError(t("account_page.phone_number_format_error"));
       return;
     }
 
@@ -185,30 +206,30 @@ const AccountPage = () => {
       .update({ 
         first_name: firstName, 
         last_name: lastName, 
-        phone_number: phoneNumber, // Save phone number
+        phone_number: phoneNumber,
         updated_at: new Date().toISOString() 
       })
       .eq('id', user.id);
 
     if (error) {
-      showError("Erreur lors de la mise à jour du profil.");
+      showError(t("account_page.profile_update_error"));
     } else {
-      showSuccess("Profil mis à jour avec succès !");
+      showSuccess(t("account_page.profile_updated_success"));
     }
   };
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !user.email) {
-        showError("Utilisateur non trouvé.");
+        showError(t("account_page.user_not_found"));
         return;
     }
     if (!currentPassword || !newPassword) {
-        showError("Veuillez remplir tous les champs de mot de passe.");
+        showError(t("account_page.fill_all_password_fields"));
         return;
     }
     if (newPassword.length < 6) {
-        showError("Le nouveau mot de passe doit contenir au moins 6 caractères.");
+        showError(t("account_page.new_password_min_length"));
         return;
     }
 
@@ -220,7 +241,7 @@ const AccountPage = () => {
     });
 
     if (signInError) {
-      showError("Le mot de passe actuel est incorrect.");
+      showError(t("account_page.current_password_incorrect"));
       setUpdatingPassword(false);
       return;
     }
@@ -230,9 +251,9 @@ const AccountPage = () => {
     });
 
     if (updateError) {
-      showError("Erreur lors de la mise à jour du mot de passe.");
+      showError(t("account_page.password_update_error"));
     } else {
-      showSuccess("Mot de passe mis à jour avec succès !");
+      showSuccess(t("account_page.password_update_success"));
       setCurrentPassword('');
       setNewPassword('');
     }
@@ -244,7 +265,7 @@ const AccountPage = () => {
   };
 
   if (loading) {
-    return <div className="container mx-auto py-12 text-center">Chargement du profil...</div>;
+    return <div className="container mx-auto py-12 text-center">{t("account_page.loading_profile")}</div>;
   }
 
   return (
@@ -252,8 +273,8 @@ const AccountPage = () => {
       <div className="max-w-2xl mx-auto space-y-8">
         <Card>
           <CardHeader>
-            <CardTitle>Mon Profil</CardTitle>
-            <CardDescription>Gérez les informations de votre profil.</CardDescription>
+            <CardTitle>{t("account_page.my_profile")}</CardTitle>
+            <CardDescription>{t("account_page.manage_profile_info")}</CardDescription>
           </CardHeader>
           <form onSubmit={handleUpdateProfile}>
             <CardContent className="space-y-6">
@@ -268,91 +289,111 @@ const AccountPage = () => {
                 <div className="space-y-3">
                   <div className="flex gap-2">
                     <Label htmlFor="avatar-upload" className="cursor-pointer">
-                      <Button type="button" variant="outline" size="sm" asChild>
+                      <Button type="button" variant="outline" size="sm" asChild disabled={uploading}>
                         <span className="flex items-center gap-2">
-                          <Upload className="h-4 w-4" />
-                          {uploading ? 'Téléchargement...' : 'Changer avatar'}
+                          {uploading ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Upload className="h-4 w-4" />
+                          )}
+                          {uploading ? t('account_page.uploading') : t('account_page.upload_avatar')}
                         </span>
                       </Button>
                       <Input
                         id="avatar-upload"
                         type="file"
-                        accept="image/*"
+                        accept="image/jpeg,image/png,image/gif"
                         onChange={handleAvatarUpload}
                         className="hidden"
                         disabled={uploading}
                       />
                     </Label>
                     {avatarUrl && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={removeAvatar}
-                        disabled={uploading}
-                        className="flex items-center gap-2"
-                      >
-                        <X className="h-4 w-4" />
-                        Supprimer
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            disabled={uploading}
+                            className="flex items-center gap-2"
+                          >
+                            <X className="h-4 w-4" />
+                            {t('account_page.remove_avatar')}
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>{t('account_page.confirm_avatar_removal_title')}</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              {t('account_page.confirm_avatar_removal_description')}
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>{t('account_page.cancel')}</AlertDialogCancel>
+                            <AlertDialogAction onClick={removeAvatar} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                              {t('account_page.remove')}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    JPG, PNG ou GIF. Max 5MB.
+                    {t('account_page.avatar_file_types')}
                   </p>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t("account_page.email")}</Label>
                 <Input id="email" type="email" value={user?.email || ''} disabled />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="firstName">Prénom</Label>
-                  <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="Entrez votre prénom" />
+                  <Label htmlFor="firstName">{t("account_page.first_name")}</Label>
+                  <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder={t("account_page.enter_first_name")} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="lastName">Nom</Label>
-                  <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Entrez votre nom" />
+                  <Label htmlFor="lastName">{t("account_page.last_name")}</Label>
+                  <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder={t("account_page.enter_last_name")} />
                 </div>
               </div>
-              {/* New Phone Number Field */}
               <div className="space-y-2">
-                <Label htmlFor="phoneNumber">Numéro de téléphone</Label>
+                <Label htmlFor="phoneNumber">{t("account_page.phone_number")}</Label>
                 <Input
                   id="phoneNumber"
-                  type="tel" // Use type="tel" for phone numbers
+                  type="tel"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  placeholder="Entrez votre numéro de téléphone (8 chiffres)"
-                  maxLength={8} // Limit input to 8 characters
+                  placeholder={t("account_page.enter_phone_number")}
+                  maxLength={8}
                 />
                 {phoneNumber && !/^\d{8}$/.test(phoneNumber) && (
-                  <p className="text-sm text-red-500">Le numéro de téléphone doit contenir exactement 8 chiffres.</p>
+                  <p className="text-sm text-red-500">{t("account_page.phone_number_format_error")}</p>
                 )}
               </div>
             </CardContent>
             <CardFooter>
-              <Button type="submit">Enregistrer les modifications</Button>
+              <Button type="submit">{t("account_page.save_changes")}</Button>
             </CardFooter>
           </form>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Changer le mot de passe</CardTitle>
-            <CardDescription>Mettez à jour votre mot de passe ici.</CardDescription>
+            <CardTitle>{t("account_page.change_password")}</CardTitle>
+            <CardDescription>{t("account_page.update_password_here")}</CardDescription>
           </CardHeader>
           <form onSubmit={handleUpdatePassword}>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="currentPassword">Mot de passe actuel</Label>
+                <Label htmlFor="currentPassword">{t("account_page.current_password")}</Label>
                 <Input id="currentPassword" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required />
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="newPassword">Nouveau mot de passe</Label>
+                  <Label htmlFor="newPassword">{t("account_page.new_password")}</Label>
                   <Button
                     type="button"
                     variant="outline"
@@ -361,7 +402,7 @@ const AccountPage = () => {
                     className="flex items-center gap-2"
                   >
                     <Zap className="h-4 w-4" />
-                    Générer
+                    {t("account_page.generate")}
                   </Button>
                 </div>
                 <div className="flex gap-2">
@@ -387,14 +428,14 @@ const AccountPage = () => {
                 </div>
                 {newPassword && (
                   <p className="text-xs text-muted-foreground">
-                    Force du mot de passe: {newPassword.length >= 12 ? 'Fort' : newPassword.length >= 8 ? 'Moyen' : 'Faible'}
+                    {t("account_page.password_strength")} {newPassword.length >= 12 ? t('account_page.strong') : newPassword.length >= 8 ? t('account_page.medium') : t('account_page.weak')}
                   </p>
                 )}
               </div>
             </CardContent>
             <CardFooter>
               <Button type="submit" disabled={updatingPassword}>
-                {updatingPassword ? 'Mise à jour...' : 'Changer le mot de passe'}
+                {updatingPassword ? t('account_page.updating') : t('account_page.update_password')}
               </Button>
             </CardFooter>
           </form>

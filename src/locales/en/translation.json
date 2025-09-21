@@ -81,7 +81,14 @@
     "remove_avatar": "Remove",
     "avatar_file_types": "JPG, PNG or GIF. Max 5MB.",
     "uploading": "Uploading...",
-    "copy_failed": "Failed to copy password"
+    "copy_failed": "Failed to copy password",
+    "select_image_error": "You must select an image.",
+    "invalid_file_type": "Invalid file type. Only JPG, PNG, or GIF are allowed.",
+    "file_size_exceeded": "File size exceeded. Maximum 5MB allowed.",
+    "confirm_avatar_removal_title": "Confirm Avatar Removal",
+    "confirm_avatar_removal_description": "Are you sure you want to remove your profile picture? This action cannot be undone.",
+    "cancel": "Cancel",
+    "remove": "Remove"
   },
   "orders_page": {
     "my_orders": "My Orders",
