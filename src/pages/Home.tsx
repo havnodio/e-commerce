@@ -37,7 +37,7 @@ const Home = () => {
       <HeroSection />
       <Gallery />
       <WhyChooseUs />
-      <section className="py-16 sm:py-24">
+      <section id="featured-products" className="py-16 sm:py-24"> {/* Added id here */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 text-center mb-12">
             {t('home_page.featured_products')}

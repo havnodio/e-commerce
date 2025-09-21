@@ -6,6 +6,13 @@ import { useTranslation } from 'react-i18next'; // Import useTranslation
 const HeroSection = () => {
   const { t } = useTranslation(); // Initialize useTranslation
 
+  const scrollToFeaturedProducts = () => {
+    const featuredProductsSection = document.getElementById('featured-products');
+    if (featuredProductsSection) {
+      featuredProductsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white">
       <div className="absolute inset-0 bg-black/50 z-10"></div>
@@ -23,7 +30,7 @@ const HeroSection = () => {
         </p>
         <div className="mt-8 flex justify-center gap-4">
           <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
-            <Link to="/products">{t('hero_section.discover_products')}</Link>
+            <a onClick={scrollToFeaturedProducts} className="cursor-pointer">{t('hero_section.discover_products')}</a>
           </Button>
           <Button asChild size="lg" variant="secondary">
             <Link to="/products">{t('hero_section.order_now')}</Link>
