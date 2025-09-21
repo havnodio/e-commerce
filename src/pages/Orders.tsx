@@ -24,12 +24,18 @@ import { format } from 'date-fns';
 import OrderDetails from "@/components/OrderDetails";
 import { Link, useNavigate } from "react-router-dom";
 import { showError, showSuccess } from "@/utils/toast";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useTranslation } from "react-i18next";
 
 const OrdersPage = () => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
   const navigate = useNavigate();
 
   const fetchOrders = async () => {
@@ -38,11 +44,21 @@ const OrdersPage = () => {
       return;
     };
     setLoading(true);
-    const { data, error } = await supabase
+    let query = supabase
       .from('orders')
       .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
+
+    if (searchTerm) {
+      query = query.ilike('id', `%${searchTerm}%`);
+    }
+
+    if (filterStatus && filterStatus !== 'all') {
+      query = query.eq('status', filterStatus);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       console.error("Error fetching orders:", error);
@@ -54,10 +70,10 @@ const OrdersPage = () => {
 
   useEffect(() => {
     fetchOrders();
-  }, [user]);
+  }, [user, searchTerm, filterStatus]); // Re-fetch orders when user, search term, or filter status changes
 
   const handleCancelOrder = async (orderId: string) => {
-    if (!window.confirm("Are you sure you want to cancel this order?")) return;
+    if (!window.confirm(t("orders_page.confirm_cancel"))) return;
 
     try {
       const { error } = await supabase.functions.invoke('cancel-order', {
@@ -66,37 +82,58 @@ const OrdersPage = () => {
 
       if (error) throw new Error(error.message);
 
-      showSuccess("Order cancelled successfully.");
+      showSuccess(t("orders_page.order_cancelled_success"));
       fetchOrders(); // Refresh the orders list
     } catch (error: any) {
-      showError(error.message || "Failed to cancel order.");
+      showError(error.message || t("orders_page.order_cancel_failed"));
     }
   };
 
   if (loading) {
-    return <div className="container mx-auto py-12 text-center">Loading orders...</div>;
+    return <div className="container mx-auto py-12 text-center">{t("orders_page.loading_orders")}</div>;
   }
 
   return (
     <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
       <Card>
         <CardHeader>
-          <CardTitle>My Orders</CardTitle>
-          <CardDescription>Here is a list of your recent orders.</CardDescription>
+          <CardTitle>{t("orders_page.my_orders")}</CardTitle>
+          <CardDescription>{t("orders_page.list_of_orders")}</CardDescription>
         </CardHeader>
         <CardContent>
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <Input
+              placeholder={t("orders_page.filter_by_id")}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="max-w-sm"
+            />
+            <Select value={filterStatus} onValueChange={setFilterStatus}>
+              <SelectTrigger className="max-w-[180px]">
+                <SelectValue placeholder={t("orders_page.filter_by_status")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("orders_page.all_statuses")}</SelectItem>
+                <SelectItem value="Pending">{t("orders_page.status_pending")}</SelectItem>
+                <SelectItem value="Shipped">{t("orders_page.status_shipped")}</SelectItem>
+                <SelectItem value="Delivered">{t("orders_page.status_delivered")}</SelectItem>
+                <SelectItem value="Cancelled">{t("orders_page.status_cancelled")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           {orders.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">You haven't placed any orders yet.</p>
+            <p className="text-center text-muted-foreground py-8">{t("orders_page.no_orders_yet")}</p>
           ) : (
             <Dialog onOpenChange={(isOpen) => !isOpen && setSelectedOrder(null)}>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Order ID</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Total</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>{t("orders_page.order_id")}</TableHead>
+                    <TableHead>{t("orders_page.date")}</TableHead>
+                    <TableHead>{t("orders_page.status")}</TableHead>
+                    <TableHead className="text-right">{t("orders_page.total")}</TableHead>
+                    <TableHead className="text-right">{t("orders_page.actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -117,16 +154,16 @@ const OrdersPage = () => {
                       <TableCell className="text-right space-x-2">
                         <DialogTrigger asChild>
                           <Button variant="outline" size="sm" onClick={() => setSelectedOrder(order)}>
-                            View Details
+                            {t("orders_page.view_details")}
                           </Button>
                         </DialogTrigger>
                         {order.status === 'Pending' && (
                           <>
                             <Button asChild variant="secondary" size="sm">
-                              <Link to={`/orders/${order.id}/edit`}>Edit</Link>
+                              <Link to={`/orders/${order.id}/edit`}>{t("orders_page.edit")}</Link>
                             </Button>
                             <Button variant="destructive" size="sm" onClick={() => handleCancelOrder(order.id)}>
-                              Cancel
+                              {t("orders_page.cancel")}
                             </Button>
                           </>
                         )}
@@ -138,7 +175,7 @@ const OrdersPage = () => {
               {selectedOrder && (
                 <DialogContent className="sm:max-w-2xl">
                   <DialogHeader>
-                    <DialogTitle>Order Details</DialogTitle>
+                    <DialogTitle>{t("orders_page.order_details")}</DialogTitle>
                   </DialogHeader>
                   <OrderDetails order={selectedOrder} />
                 </DialogContent>

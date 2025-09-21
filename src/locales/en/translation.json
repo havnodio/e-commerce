@@ -118,7 +118,14 @@
     "loading_orders": "Loading orders...",
     "confirm_cancel": "Are you sure you want to cancel this order?",
     "order_cancelled_success": "Order cancelled successfully.",
-    "order_cancel_failed": "Failed to cancel order."
+    "order_cancel_failed": "Failed to cancel order.",
+    "filter_by_id": "Filter by Order ID...",
+    "filter_by_status": "Filter by Status",
+    "all_statuses": "All Statuses",
+    "status_pending": "Pending",
+    "status_shipped": "Shipped",
+    "status_delivered": "Delivered",
+    "status_cancelled": "Cancelled"
   },
   "edit_order_page": {
     "add_products": "Add Products",

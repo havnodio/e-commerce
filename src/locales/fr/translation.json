@@ -118,7 +118,14 @@
     "loading_orders": "Chargement des commandes...",
     "confirm_cancel": "Êtes-vous sûr(e) de vouloir annuler cette commande ?",
     "order_cancelled_success": "Commande annulée avec succès.",
-    "order_cancel_failed": "Échec de l'annulation de la commande."
+    "order_cancel_failed": "Échec de l'annulation de la commande.",
+    "filter_by_id": "Filtrer par ID de commande...",
+    "filter_by_status": "Filtrer par statut",
+    "all_statuses": "Tous les statuts",
+    "status_pending": "En attente",
+    "status_shipped": "Expédiée",
+    "status_delivered": "Livrée",
+    "status_cancelled": "Annulée"
   },
   "edit_order_page": {
     "add_products": "Ajouter des produits",
