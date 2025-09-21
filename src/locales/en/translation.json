@@ -88,7 +88,19 @@
     "confirm_avatar_removal_title": "Confirm Avatar Removal",
     "confirm_avatar_removal_description": "Are you sure you want to remove your profile picture? This action cannot be undone.",
     "cancel": "Cancel",
-    "remove": "Remove"
+    "remove": "Remove",
+    "delete_account": "Delete Account",
+    "delete_account_description": "Permanently delete your account and all associated data. This action cannot be undone.",
+    "delete_account_button": "Delete Account",
+    "confirm_account_deletion_title": "Are you absolutely sure?",
+    "confirm_account_deletion_description": "This action cannot be undone. This will permanently delete your account and remove your data from our servers. Please re-enter your password to confirm.",
+    "enter_your_password": "Enter your password",
+    "password_placeholder": "••••••••",
+    "confirm_delete": "I understand, delete my account",
+    "enter_password_to_confirm": "Please enter your password to confirm.",
+    "incorrect_password_for_deletion": "Incorrect password. Account deletion failed.",
+    "account_deleted_success": "Your account has been successfully deleted.",
+    "account_deletion_error": "An error occurred during account deletion."
   },
   "orders_page": {
     "my_orders": "My Orders",

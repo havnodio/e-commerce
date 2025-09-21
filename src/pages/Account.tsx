@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import AvatarManagement from "@/components/AvatarManagement";
 import ProfileDetailsForm from "@/components/ProfileDetailsForm";
 import PasswordChangeForm from "@/components/PasswordChangeForm";
+import AccountDeletionForm from "@/components/AccountDeletionForm"; // Import the new component
 
 const AccountPage = () => {
   const { user } = useAuth();
@@ -80,6 +81,9 @@ const AccountPage = () => {
 
         {/* Password Change Form */}
         <PasswordChangeForm user={user} />
+
+        {/* Account Deletion Form */}
+        <AccountDeletionForm user={user} />
       </div>
     </div>
   );

@@ -88,6 +88,145 @@
     "confirm_avatar_removal_title": "Confirmer la suppression de l'avatar",
     "confirm_avatar_removal_description": "Êtes-vous sûr de vouloir supprimer votre photo de profil ? Cette action est irréversible.",
     "cancel": "Annuler",
-    "remove": "Supprimer"
+    "remove": "Supprimer",
+    "delete_account": "Supprimer le compte",
+    "delete_account_description": "Supprimez définitivement votre compte et toutes les données associées. Cette action est irréversible.",
+    "delete_account_button": "Supprimer le compte",
+    "confirm_account_deletion_title": "Êtes-vous absolument sûr(e) ?",
+    "confirm_account_deletion_description": "Cette action est irréversible. Cela supprimera définitivement votre compte et toutes vos données de nos serveurs. Veuillez saisir votre mot de passe pour confirmer.",
+    "enter_your_password": "Saisissez votre mot de passe",
+    "password_placeholder": "••••••••",
+    "confirm_delete": "Je comprends, supprimer mon compte",
+    "enter_password_to_confirm": "Veuillez saisir votre mot de passe pour confirmer.",
+    "incorrect_password_for_deletion": "Mot de passe incorrect. La suppression du compte a échoué.",
+    "account_deleted_success": "Votre compte a été supprimé avec succès.",
+    "account_deletion_error": "Une erreur est survenue lors de la suppression du compte."
+  },
+  "orders_page": {
+    "my_orders": "Mes Commandes",
+    "list_of_orders": "Voici la liste de vos commandes récentes.",
+    "no_orders_yet": "Vous n'avez pas encore passé de commandes.",
+    "order_id": "ID Commande",
+    "date": "Date",
+    "status": "Statut",
+    "total": "Total",
+    "actions": "Actions",
+    "view_details": "Voir les détails",
+    "edit": "Modifier",
+    "cancel": "Annuler",
+    "order_details": "Détails de la commande",
+    "loading_orders": "Chargement des commandes...",
+    "confirm_cancel": "Êtes-vous sûr(e) de vouloir annuler cette commande ?",
+    "order_cancelled_success": "Commande annulée avec succès.",
+    "order_cancel_failed": "Échec de l'annulation de la commande."
+  },
+  "edit_order_page": {
+    "add_products": "Ajouter des produits",
+    "add_products_to_order": "Ajouter des produits à la commande",
+    "loading_products": "Chargement des produits...",
+    "added": "Ajouté",
+    "edit_order": "Modifier la commande",
+    "order_id": "ID Commande",
+    "error": "Erreur",
+    "order_not_found": "Commande introuvable.",
+    "order_processed_cannot_modify": "Cette commande a déjà été traitée et ne peut pas être modifiée.",
+    "fetch_items_error": "Impossible de récupérer les articles de la commande.",
+    "product_already_in_order": "Le produit est déjà dans la commande.",
+    "product": "Produit",
+    "quantity": "Quantité",
+    "subtotal": "Sous-total",
+    "actions": "Actions",
+    "new_total": "Nouveau total",
+    "save_changes": "Enregistrer les modifications",
+    "saving": "Enregistrement...",
+    "loading_order_details": "Chargement des détails de la commande...",
+    "order_updated_success": "Commande mise à jour avec succès !",
+    "order_update_failed": "Échec de la mise à jour de la commande."
+  },
+  "order_details_component": {
+    "order_id": "ID Commande",
+    "product": "Produit",
+    "quantity": "Quantité",
+    "price": "Prix",
+    "subtotal": "Sous-total",
+    "total": "Total"
+  },
+  "why_choose_us": {
+    "title": "Pourquoi Nous Choisir ?",
+    "natural_title": "100% Naturel",
+    "natural_description": "Préparé avec les meilleurs ingrédients naturels, sans conservateurs.",
+    "mediterranean_title": "Saveur Méditerranéenne",
+    "mediterranean_description": "Un goût authentique qui vous transporte sur les côtes ensoleillées de la Tunisie.",
+    "handmade_title": "Qualité Artisanale",
+    "handmade_description": "Élaboré avec passion et soin en petites quantités pour un croquant parfait.",
+    "direct_to_you_title": "Directement Chez Vous",
+    "direct_to_you_description": "De notre cuisine artisanale directement à votre table, en garantissant la fraîcheur."
+  },
+  "about_section": {
+    "our_story": "Notre Histoire",
+    "description_part1": "Gusto Club Tunisie est né d'un amour pour les saveurs méditerranéennes authentiques et d'une passion pour l'artisanat tunisien. Nous croyons aux ingrédients simples et de haute qualité et aux traditions séculaires pour créer des taralli qui ne sont pas seulement une collation, mais une expérience.",
+    "description_part2": "Nos valeurs sont simples : Qualité, Tradition et Passion. Chaque lot est fait à la main avec soin, garantissant une bouchée délicieuse et croustillante à chaque fois."
+  },
+  "contact_section": {
+    "get_in_touch": "Contactez-nous",
+    "contact_description": "Vous avez une question, une demande de gros, ou vous voulez simplement nous dire bonjour ? Écrivez-nous !",
+    "your_name": "Votre Nom",
+    "your_email": "Votre E-mail",
+    "your_message": "Votre Message",
+    "send_message": "Envoyer le message",
+    "company_info": "Informations sur l'entreprise",
+    "emitter": "Émetteur",
+    "address": "Adresse",
+    "tel": "Tél",
+    "join_club": "Rejoignez le Gusto Club",
+    "newsletter_description": "Recevez des offres exclusives et soyez le premier informé des nouveaux produits.",
+    "enter_email": "Saisissez votre e-mail",
+    "subscribe": "S'abonner",
+    "fill_all_fields": "Veuillez remplir tous les champs.",
+    "message_sent_success": "Votre message a été envoyé avec succès !",
+    "message_send_failed": "Échec de l'envoi du message. Veuillez réessayer.",
+    "newsletter_subscribed_success": "Merci de vous être abonné à notre newsletter !",
+    "profile_fetch_error": "Erreur lors de la récupération de votre profil.",
+    "sending": "Envoi en cours..."
+  },
+  "settings_page": {
+    "title": "Paramètres",
+    "description": "Gérez les paramètres de votre application.",
+    "dark_mode": "Mode Sombre",
+    "toggle_theme": "Basculez entre les thèmes clair et sombre.",
+    "newsletter": "Newsletter",
+    "subscribe_newsletter": "Abonnez-vous à notre newsletter hebdomadaire."
+  },
+  "not_found_page": {
+    "error_log": "Erreur 404 : L'utilisateur a tenté d'accéder à une route inexistante :",
+    "title": "404",
+    "description": "Oups ! Page introuvable",
+    "return_home": "Retour à l'accueil"
+  },
+  "cart_sheet_content": {
+    "my_cart": "Mon Panier ({{count}})",
+    "cart_description": "Voici les articles dans votre panier.",
+    "cart_empty": "Votre panier est vide.",
+    "total": "Total",
+    "checkout": "Passer à la caisse",
+    "processing": "Traitement...",
+    "login_required": "Vous devez être connecté pour passer une commande.",
+    "order_placed_success": "Votre commande a été passée avec succès !",
+    "checkout_error": "Une erreur est survenue lors du passage de la commande.",
+    "item_added_success": "{{productName}} a été ajouté au panier !",
+    "item_removed": "Article supprimé du panier."
+  },
+  "sign_in": {
+    "social_provider_text": "Se connecter avec {{provider}}",
+    "link_text": "Vous avez déjà un compte ? Connectez-vous"
+  },
+  "sign_up": {
+    "button_label": "Créer un compte",
+    "social_provider_text": "S'inscrire avec {{provider}}",
+    "link_text": "Vous n'avez pas de compte ? Inscrivez-vous"
+  },
+  "forgotten_password": {
+    "button_label": "Envoyer les instructions",
+    "link_text": "Mot de passe oublié ?"
   }
 }
