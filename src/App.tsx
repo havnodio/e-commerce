@@ -30,7 +30,7 @@ const App = () => (
           <CartProvider>
             <I18nextProvider i18n={i18n}> {/* Wrap with I18nextProvider */}
               <Toaster />
-              <Sonner position="top-left" /> {/* Changed position to top-left */}
+              <Sonner position="top-right" /> {/* Changed position to top-right */}
               <Routes>
                 <Route path="/login" element={<LoginPage />} />
 
