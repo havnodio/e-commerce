@@ -16,13 +16,13 @@ const WhyChooseUs = () => {
     <section className="py-16 lg:py-24 bg-secondary">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-primary">Why Choose Us?</h2>
+          <h2 className="text-3xl font-bold text-primary">Pourquoi Nous Choisir&nbsp;?</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
-          <FeatureCard icon={Leaf} title="100% Natural" description="Made with the finest, all-natural ingredients with no preservatives." />
-          <FeatureCard icon={Sun} title="Mediterranean Taste" description="An authentic flavor that transports you to the sunny coasts of Tunisia." />
-          <FeatureCard icon={Heart} title="Handmade Quality" description="Crafted with passion and care in small batches for the perfect crunch." />
-          <FeatureCard icon={Truck} title="Direct to You" description="From our artisanal kitchen directly to your table, ensuring freshness." />
+          <FeatureCard icon={Leaf} title="100% Naturel" description="Préparé avec les meilleurs ingrédients naturels, sans conservateurs." />
+          <FeatureCard icon={Sun} title="Saveur Méditerranéenne" description="Un goût authentique qui vous transporte sur les côtes ensoleillées de la Tunisie." />
+          <FeatureCard icon={Heart} title="Qualité Artisanale" description="Élaboré avec passion et soin en petites quantités pour un croquant parfait." />
+          <FeatureCard icon={Truck} title="Directement Chez Vous" description="De notre cuisine artisanale directement à votre table, en garantissant la fraîcheur." />
         </div>
       </div>
     </section>
