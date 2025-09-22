@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { showSuccess, showError } from '@/utils/toast';
 import { useTranslation } from 'react-i18next';
+import DarkVeil from '@/components/DarkVeil'; // Import DarkVeil
 
 const LoginPage = () => {
   const { session } = useAuth();
@@ -86,8 +87,14 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex items-stretch">
-      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-gray-900 to-blue-800 items-center justify-center p-12 text-left text-white">
-        <div className="max-w-md">
+      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-gray-900 to-blue-800 items-center justify-center p-12 text-left text-white relative overflow-hidden"> {/* Added relative and overflow-hidden */}
+        <DarkVeil /> {/* Added DarkVeil here */}
+        <img 
+          src="https://i.imgur.com/BNsfW0H.png" 
+          alt="Background" 
+          className="absolute inset-0 w-full h-full object-cover z-0" 
+        />
+        <div className="relative z-10 max-w-md"> {/* Added relative z-10 to keep text above veil */}
           <h1 className="text-5xl font-bold mb-4">{t('login_page.welcome')}</h1>
           <p className="text-xl">{t('login_page.start_journey')}</p>
         </div>
