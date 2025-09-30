@@ -11,7 +11,8 @@
     "settings": "Paramètres",
     "logout": "Déconnexion",
     "login": "Connexion",
-    "signup": "S'inscrire"
+    "signup": "S'inscrire",
+    "dashboard": "Tableau de bord"
   },
   "footer": {
     "title": "Gusto Glub Taralli",
@@ -86,7 +87,7 @@
     "invalid_file_type": "Type de fichier invalide. Seuls les JPG, PNG ou GIF sont autorisés.",
     "file_size_exceeded": "Taille du fichier dépassée. Maximum 5 Mo autorisés.",
     "confirm_avatar_removal_title": "Confirmer la suppression de l'avatar",
-    "confirm_avatar_removal_description": "Êtes-vous sûr de vouloir supprimer votre photo de profil ? Cette action est irréversible.",
+    "confirm_avatar_removal_description": "Êtes-vous sûr(e) de vouloir supprimer votre photo de profil ? Cette action est irréversible.",
     "cancel": "Annuler",
     "remove": "Supprimer",
     "delete_account": "Supprimer le compte",

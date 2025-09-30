@@ -1,4 +1,4 @@
-import { ShoppingCart, User, Search, Menu, LogOut, Settings as SettingsIcon, User as UserIcon, CreditCard } from 'lucide-react';
+import { ShoppingCart, User, Search, Menu, LogOut, Settings as SettingsIcon, User as UserIcon, CreditCard, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next'; // Import useTranslation
 
 export const Header = () => {
   const { itemCount } = useCart();
-  const { session } = useAuth();
+  const { session, user } = useAuth(); // Get user object to check role
   const navigate = useNavigate();
   const { t, i18n } = useTranslation(); // Initialize useTranslation
 
@@ -111,6 +111,14 @@ export const Header = () => {
                         <span>{t('header.my_orders')}</span>
                       </Link>
                     </DropdownMenuItem>
+                    {user?.role === 'admin' && ( // Conditionally render Dashboard link
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin-dashboard"> {/* Placeholder URL */}
+                          <LayoutDashboard className="mr-2 h-4 w-4" />
+                          <span>{t('header.dashboard')}</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem asChild>
                       <Link to="/settings">
                         <SettingsIcon className="mr-2 h-4 w-4" />

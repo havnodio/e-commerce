@@ -11,7 +11,8 @@
     "settings": "Settings",
     "logout": "Logout",
     "login": "Login",
-    "signup": "Sign Up"
+    "signup": "Sign Up",
+    "dashboard": "Dashboard"
   },
   "footer": {
     "title": "Gusto Glub Taralli",

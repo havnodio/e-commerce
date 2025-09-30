@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 interface AuthContextType {
   session: Session | null;
-  user: User | null;
+  user: (User & { role?: string }) | null; // Extend User type to include role
   loading: boolean;
 }
 
@@ -16,22 +16,49 @@ const AuthContext = createContext<AuthContextType>({
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<(User & { role?: string }) | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getSession = async () => {
+    const getSessionAndProfile = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
-      setUser(session?.user ?? null);
+
+      if (session?.user) {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .single();
+
+        if (error && error.code !== 'PGRST116') { // PGRST116 means no row found
+          console.error('Error fetching user profile role:', error);
+        }
+        setUser({ ...session.user, role: profile?.role || 'user' });
+      } else {
+        setUser(null);
+      }
       setLoading(false);
     };
 
-    getSession();
+    getSessionAndProfile();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
-      setUser(session?.user ?? null);
+      if (session?.user) {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .single();
+
+        if (error && error.code !== 'PGRST116') {
+          console.error('Error fetching user profile role on auth change:', error);
+        }
+        setUser({ ...session.user, role: profile?.role || 'user' });
+      } else {
+        setUser(null);
+      }
     });
 
     return () => subscription.unsubscribe();
