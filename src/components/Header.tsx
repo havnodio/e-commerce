@@ -113,10 +113,10 @@ export const Header = () => {
                     </DropdownMenuItem>
                     {user?.role === 'admin' && ( // Conditionally render Dashboard link
                       <DropdownMenuItem asChild>
-                        <Link to="/admin-dashboard"> {/* Placeholder URL */}
+                        <a href="https://admin-dashboard-5z1s.onrender.com" target="_blank" rel="noopener noreferrer"> {/* Updated URL */}
                           <LayoutDashboard className="mr-2 h-4 w-4" />
                           <span>{t('header.dashboard')}</span>
-                        </Link>
+                        </a>
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuItem asChild>
