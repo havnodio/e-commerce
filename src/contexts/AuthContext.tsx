@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const getSessionAndProfile = async () => {
       console.log('AuthContext: Initial getSessionAndProfile called');
       const { data: { session: initialSession } } = await supabase.auth.getSession();
-      console.log('AuthContext: Initial session fetched:', initialSession);
+      console.log('AuthContext: Initial session fetched:', initialSession ? 'present' : 'null');
       setSession(initialSession);
 
       if (initialSession?.user) {
@@ -38,10 +38,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           console.error('AuthContext: Error fetching user profile role:', error);
         }
         const userWithRole = { ...initialSession.user, role: profile?.role || 'user' };
-        console.log('AuthContext: Initial user with role:', userWithRole);
+        console.log('AuthContext: Initial user with role:', userWithRole ? 'present' : 'null');
         setUser(userWithRole);
       } else {
-        console.log('AuthContext: No initial user session.');
+        console.log('AuthContext: No initial user session, setting user to null.');
         setUser(null);
       }
       setLoading(false);
@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     getSessionAndProfile();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
-      console.log('AuthContext: onAuthStateChange event:', _event, 'newSession:', newSession);
+      console.log('AuthContext: onAuthStateChange event:', _event, 'newSession:', newSession ? 'present' : 'null');
       setSession(newSession);
       if (newSession?.user) {
         console.log('AuthContext: onAuthStateChange - Fetching profile for user:', newSession.user.id);
@@ -65,10 +65,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           console.error('AuthContext: onAuthStateChange - Error fetching user profile role:', error);
         }
         const userWithRole = { ...newSession.user, role: profile?.role || 'user' };
-        console.log('AuthContext: onAuthStateChange - User with role:', userWithRole);
+        console.log('AuthContext: onAuthStateChange - User with role:', userWithRole ? 'present' : 'null');
         setUser(userWithRole);
       } else {
-        console.log('AuthContext: onAuthStateChange - No user session.');
+        console.log('AuthContext: onAuthStateChange - No user session, setting user to null.');
         setUser(null);
       }
     });

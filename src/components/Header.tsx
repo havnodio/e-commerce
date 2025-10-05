@@ -26,10 +26,14 @@ export const Header = () => {
   const { t, i18n } = useTranslation(); // Initialize useTranslation
 
   const handleLogout = async () => {
+    console.log('Header: Attempting to log out. Current session:', session);
+    console.log('Header: Current user:', user);
     const { error } = await supabase.auth.signOut();
     if (error) {
+      console.error('Header: Logout error:', error);
       showError(t("account_page.logout_error")); // Use translation
     } else {
+      console.log('Header: Logout successful.');
       showSuccess(t("account_page.logout_success")); // Use translation
       navigate('/');
     }
