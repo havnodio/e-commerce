@@ -1,4 +1,4 @@
-import { ShoppingCart, User, Search, Menu, LogOut, Settings as SettingsIcon, User as UserIcon, CreditCard, LayoutDashboard } from 'lucide-react';
+import { ShoppingCart, User, Search, Menu, LogOut, Settings as SettingsIcon, User as UserIcon, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
@@ -111,14 +111,7 @@ export const Header = () => {
                         <span>{t('header.my_orders')}</span>
                       </Link>
                     </DropdownMenuItem>
-                    {user?.role === 'admin' && ( // Conditionally render Dashboard link
-                      <DropdownMenuItem asChild>
-                        <a href="https://admin-rddj.onrender.com" target="_blank" rel="noopener noreferrer"> {/* Updated URL */}
-                          <LayoutDashboard className="mr-2 h-4 w-4" />
-                          <span>{t('header.dashboard')}</span>
-                        </a>
-                      </DropdownMenuItem>
-                    )}
+                    {/* Dashboard link removed */}
                     <DropdownMenuItem asChild>
                       <Link to="/settings">
                         <SettingsIcon className="mr-2 h-4 w-4" />
