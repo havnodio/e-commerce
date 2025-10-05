@@ -71,6 +71,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.log('AuthContext: onAuthStateChange - No user session, setting user to null.');
         setUser(null);
       }
+      setLoading(false); // Ensure loading is set to false after any auth state change
+      console.log('AuthContext: onAuthStateChange - Loading set to false');
     });
 
     return () => {
