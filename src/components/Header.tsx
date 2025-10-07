@@ -1,4 +1,4 @@
-import { ShoppingCart, User, Search, Menu, LogOut, Settings as SettingsIcon, User as UserIcon, CreditCard } from 'lucide-react';
+import { ShoppingCart, User, Search, Menu, LogOut, Settings as SettingsIcon, User as UserIcon, CreditCard, Moon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
@@ -17,31 +17,30 @@ import CartSheetContent from './CartSheetContent';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { showError, showSuccess } from '@/utils/toast';
-import { useTranslation } from 'react-i18next'; // Import useTranslation
+import { useTranslation } from 'react-i18next';
+import { Switch } from '@/components/ui/switch'; // Import Switch
+import { useTheme } from '@/contexts/ThemeContext'; // Import useTheme
 
 export const Header = () => {
   const { itemCount } = useCart();
-  const { session, user } = useAuth(); // Get user object to check role
+  const { session, user } = useAuth();
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation(); // Initialize useTranslation
+  const { t } = useTranslation();
+  const { theme, toggleTheme } = useTheme(); // Use the theme hook
 
   const handleLogout = async () => {
-    console.log('Header: handleLogout called.'); // Added log
+    console.log('Header: handleLogout called.');
     console.log('Header: Attempting to log out. Current session:', session);
     console.log('Header: Current user:', user);
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.error('Header: Logout error:', error);
-      showError(t("account_page.logout_error")); // Use translation
+      showError(t("account_page.logout_error"));
     } else {
       console.log('Header: Logout successful.');
-      showSuccess(t("account_page.logout_success")); // Use translation
+      showSuccess(t("account_page.logout_success"));
       navigate('/');
     }
-  };
-
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
   };
 
   const navItems = [
@@ -76,22 +75,16 @@ export const Header = () => {
               <Search className="h-5 w-5" />
             </Button>
             
-            {/* Language Switcher */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  {i18n.language.toUpperCase()}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-24" align="end">
-                <DropdownMenuItem onClick={() => changeLanguage('en')}>
-                  English
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => changeLanguage('fr')}>
-                  Français
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Dark Mode Toggle */}
+            <div className="flex items-center space-x-2">
+              <Sun className="h-5 w-5 text-gray-500" />
+              <Switch 
+                checked={theme === 'dark'} 
+                onCheckedChange={toggleTheme} 
+                aria-label="Toggle dark mode"
+              />
+              <Moon className="h-5 w-5 text-gray-500" />
+            </div>
 
             {session ? (
               <DropdownMenu>
@@ -104,7 +97,6 @@ export const Header = () => {
                   <DropdownMenuLabel>{t('header.my_account')}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    {/* Dashboard link removed */}
                     <DropdownMenuItem asChild>
                       <Link to="/account">
                         <UserIcon className="mr-2 h-4 w-4" />
