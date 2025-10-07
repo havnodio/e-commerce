@@ -106,7 +106,8 @@ export const Header = () => {
                   <DropdownMenuGroup>
                     {user?.role === 'admin' && (
                       <DropdownMenuItem 
-                        onClick={() => {
+                        onClick={(e) => { // Added event parameter
+                          e.stopPropagation(); // Stop event propagation
                           console.log('Header: Dashboard link clicked via DropdownMenuItem.');
                           window.open("https://admino-bice.vercel.app", "_blank");
                         }}
