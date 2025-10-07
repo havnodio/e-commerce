@@ -1,5 +1,3 @@
-"use client";
-
 import React from 'react';
 import SplitText from './SplitText';
 
@@ -41,7 +39,7 @@ const GustoIntro: React.FC = () => {
         <SplitText
           text="vous avez aimer"
           tag="h2"
-          className="text-5xl font-bold" {/* Changed to text-5xl and font-bold */}
+          className="text-3xl font-medium"
           splitType="chars"
           duration={0.7}
           delay={50}
