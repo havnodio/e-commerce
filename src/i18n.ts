@@ -18,7 +18,7 @@ i18n
         translation: frTranslation,
       },
     },
-    fallbackLng: 'en', // Fallback language if detection fails
+    fallbackLng: 'fr', // Changed fallback language to French
     debug: false, // Set to true for debugging
     interpolation: {
       escapeValue: false, // React already escapes by default
