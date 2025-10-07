@@ -17,8 +17,9 @@ import LoginPage from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
 import EditOrderPage from "./pages/EditOrder";
-import { I18nextProvider } from 'react-i18next'; // Import I18nextProvider
-import i18n from './i18n'; // Import your i18n configuration
+import { I18nextProvider } from 'react-i18next';
+import i18n from './i18n';
+import { ThemeProvider } from './contexts/ThemeContext'; // Import ThemeProvider
 
 const queryClient = new QueryClient();
 
@@ -28,29 +29,31 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <CartProvider>
-            <I18nextProvider i18n={i18n}> {/* Wrap with I18nextProvider */}
-              <Toaster />
-              <Sonner position="bottom-left" /> {/* Changed position to bottom-left */}
-              <Routes>
-                <Route path="/login" element={<LoginPage />} />
+            <I18nextProvider i18n={i18n}>
+              <ThemeProvider> {/* Wrap the entire app with ThemeProvider */}
+                <Toaster />
+                <Sonner position="bottom-left" />
+                <Routes>
+                  <Route path="/login" element={<LoginPage />} />
 
-                <Route element={<Layout />}>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/about" element={<AboutPage />} />
-                  <Route path="/contact" element={<ContactPage />} />
-                  <Route path="/products" element={<ProductsPage />} />
+                  <Route element={<Layout />}>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/about" element={<AboutPage />} />
+                    <Route path="/contact" element={<ContactPage />} />
+                    <Route path="/products" element={<ProductsPage />} />
 
-                  <Route element={<ProtectedRoute />}>
-                    <Route path="/account" element={<AccountPage />} />
-                    <Route path="/orders" element={<OrdersPage />} />
-                    <Route path="/orders/:orderId/edit" element={<EditOrderPage />} />
-                    <Route path="/settings" element={<SettingsPage />} />
+                    <Route element={<ProtectedRoute />}>
+                      <Route path="/account" element={<AccountPage />} />
+                      <Route path="/orders" element={<OrdersPage />} />
+                      <Route path="/orders/:orderId/edit" element={<EditOrderPage />} />
+                      <Route path="/settings" element={<SettingsPage />} />
+                    </Route>
+
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="*" element={<NotFound />} />
                   </Route>
-
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Route>
-              </Routes>
+                </Routes>
+              </ThemeProvider>
             </I18nextProvider>
           </CartProvider>
         </AuthProvider>
