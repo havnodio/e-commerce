@@ -26,7 +26,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { showError, showSuccess } from "@/utils/toast";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useTranslation } => "react-i18next";
+import { useTranslation } from "react-i18next";
 
 const OrdersPage = () => {
   const { user } = useAuth();
