@@ -13,16 +13,6 @@ const GustoIntro: React.FC = () => {
         delay={50}
         ease="power4.out"
       />
-      <SplitText
-        text="GUSTO CLUB"
-        tag="h1"
-        className="text-6xl font-bold"
-        splitType="chars"
-        duration={0.8}
-        delay={60}
-        ease="power4.out"
-      />
-
       <div className="mt-4"> {/* Adjusted margin for "TO" */}
         <SplitText
           text="TO"
@@ -34,10 +24,21 @@ const GustoIntro: React.FC = () => {
           ease="power4.out"
         />
       </div>
+      <SplitText
+        text="GUSTO CLUB"
+        tag="h1"
+        className="text-6xl font-bold"
+        splitType="chars"
+        duration={0.8}
+        delay={60}
+        ease="power4.out"
+      />
+
+      
 
       <div className="mt-6">
         <SplitText
-          text="vous avez aimer"
+          text="vous avez aimer "
           tag="h2"
           className="text-3xl font-medium"
           splitType="chars"
