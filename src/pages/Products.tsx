@@ -3,18 +3,29 @@ import { useEffect, useState } from 'react';
 import { Product } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Input } from '@/components/ui/input'; // Import Input component
+import { Search } from 'lucide-react'; // Import Search icon
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 
 const ProductsPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState(''); // State for search term
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
-      const { data, error } = await supabase
+      let query = supabase
         .from('products')
         .select('*')
         .order('id');
+      
+      if (searchTerm) {
+        query = query.ilike('name', `%${searchTerm}%`); // Filter by product name
+      }
+
+      const { data, error } = await query;
       
       if (error) {
         console.error("Error fetching products:", error);
@@ -24,7 +35,7 @@ const ProductsPage = () => {
       setLoading(false);
     };
     fetchProducts();
-  }, []);
+  }, [searchTerm]); // Re-fetch products when search term changes
 
   return (
     <div className="bg-white">
@@ -32,11 +43,23 @@ const ProductsPage = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-              Our Products
+              {t('products_page.title')}
             </h1>
             <p className="mt-4 text-lg text-gray-600">
-              Discover our full range of authentic, handmade taralli.
+              {t('products_page.description')}
             </p>
+          </div>
+          <div className="mb-8 flex justify-center">
+            <div className="relative w-full max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Input
+                type="text"
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 border rounded-md w-full"
+              />
+            </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {loading ? (

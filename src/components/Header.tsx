@@ -1,4 +1,4 @@
-import { ShoppingCart, User, Search, Menu, LogOut, Settings as SettingsIcon, User as UserIcon, CreditCard, Moon, Sun } from 'lucide-react';
+import { ShoppingCart, User, Menu, LogOut, Settings as SettingsIcon, User as UserIcon, CreditCard, Moon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
@@ -18,15 +18,15 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { showError, showSuccess } from '@/utils/toast';
 import { useTranslation } from 'react-i18next';
-import { Switch } from '@/components/ui/switch'; // Import Switch
-import { useTheme } from '@/contexts/ThemeContext'; // Import useTheme
+import { Switch } from '@/components/ui/switch';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export const Header = () => {
   const { itemCount } = useCart();
   const { session, user } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { theme, toggleTheme } = useTheme(); // Use the theme hook
+  const { theme, toggleTheme } = useTheme();
 
   const handleLogout = async () => {
     console.log('Header: handleLogout called.');
@@ -71,10 +71,6 @@ export const Header = () => {
             ))}
           </nav>
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon" className="hidden md:inline-flex">
-              <Search className="h-5 w-5" />
-            </Button>
-            
             {/* Dark Mode Toggle */}
             <div className="flex items-center space-x-2">
               <Sun className="h-5 w-5 text-gray-500" />
