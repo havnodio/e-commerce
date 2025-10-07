@@ -19,47 +19,66 @@ import Layout from "./components/Layout";
 import EditOrderPage from "./pages/EditOrder";
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
-import { ThemeProvider } from './contexts/ThemeContext'; // Import ThemeProvider
+import { ThemeProvider } from './contexts/ThemeContext';
+import React, { useState, useEffect } from 'react'; // Import React and hooks
+import GustoIntro from './components/GustoIntro'; // Import the new intro component
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <BrowserRouter>
-        <AuthProvider>
-          <CartProvider>
-            <I18nextProvider i18n={i18n}>
-              <ThemeProvider> {/* Wrap the entire app with ThemeProvider */}
-                <Toaster />
-                <Sonner position="bottom-left" />
-                <Routes>
-                  <Route path="/login" element={<LoginPage />} />
+const App = () => {
+  const [showIntro, setShowIntro] = useState(true);
 
-                  <Route element={<Layout />}>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/about" element={<AboutPage />} />
-                    <Route path="/contact" element={<ContactPage />} />
-                    <Route path="/products" element={<ProductsPage />} />
+  useEffect(() => {
+    // Calculate total intro duration: 3s delay for second text + ~0.7s animation duration
+    const totalIntroDuration = 4000; // 4 seconds to be safe
+    const timer = setTimeout(() => {
+      setShowIntro(false);
+    }, totalIntroDuration);
+    return () => clearTimeout(timer);
+  }, []);
 
-                    <Route element={<ProtectedRoute />}>
-                      <Route path="/account" element={<AccountPage />} />
-                      <Route path="/orders" element={<OrdersPage />} />
-                      <Route path="/orders/:orderId/edit" element={<EditOrderPage />} />
-                      <Route path="/settings" element={<SettingsPage />} />
-                    </Route>
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <BrowserRouter>
+          <AuthProvider>
+            <CartProvider>
+              <I18nextProvider i18n={i18n}>
+                <ThemeProvider>
+                  <Toaster />
+                  <Sonner position="bottom-left" />
+                  {showIntro ? (
+                    <GustoIntro />
+                  ) : (
+                    <Routes>
+                      <Route path="/login" element={<LoginPage />} />
 
-                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                    <Route path="*" element={<NotFound />} />
-                  </Route>
-                </Routes>
-              </ThemeProvider>
-            </I18nextProvider>
-          </CartProvider>
-        </AuthProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+                      <Route element={<Layout />}>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/about" element={<AboutPage />} />
+                        <Route path="/contact" element={<ContactPage />} />
+                        <Route path="/products" element={<ProductsPage />} />
+
+                        <Route element={<ProtectedRoute />}>
+                          <Route path="/account" element={<AccountPage />} />
+                          <Route path="/orders" element={<OrdersPage />} />
+                          <Route path="/orders/:orderId/edit" element={<EditOrderPage />} />
+                          <Route path="/settings" element={<SettingsPage />} />
+                        </Route>
+
+                        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                        <Route path="*" element={<NotFound />} />
+                      </Route>
+                    </Routes>
+                  )}
+                </ThemeProvider>
+              </I18nextProvider>
+            </CartProvider>
+          </AuthProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
