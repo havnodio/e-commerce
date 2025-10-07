@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
-import { SplitText } from 'gsap/SplitText'; // Assuming SplitTextPlugin is available
+import { SplitText } from 'gsap/SplitText';
 
 gsap.registerPlugin(SplitText);
 
@@ -33,10 +33,7 @@ const SplitTextComponent: React.FC<SplitTextProps> = ({
         opacity: 0,
         y: 20,
         rotationX: -90,
-        stagger: {
-          each: delay / 1000, // Convert ms to seconds
-          from: 'random',
-        },
+        stagger: delay / 1000, // Removed 'from: random' to ensure sequential animation
         duration,
         ease,
         delay: 0.5, // Small initial delay for the whole animation to start
