@@ -16,7 +16,7 @@ const GustoIntro: React.FC = () => {
 
       <div className="mt-6">
         <SplitText
-          text="vous avez aimer"
+          text="vous  avez aimer"
           tag="h2"
           className="text-3xl font-medium"
           splitType="chars"
