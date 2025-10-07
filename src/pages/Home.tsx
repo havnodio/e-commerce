@@ -6,16 +6,16 @@ import { useEffect, useState } from "react";
 import { Product } from "@/types";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useTranslation } from 'react-i18next'; // Import useTranslation
+import { useTranslation } from 'react-i18next';
 
 const Home = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const { t } = useTranslation(); // Initialize useTranslation
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchProducts = async () => {
-      console.log('Home: fetchProducts called.'); // Added log
+      console.log('Home: fetchProducts called.');
       setLoading(true);
       const { data, error } = await supabase
         .from('products')
@@ -24,25 +24,25 @@ const Home = () => {
         .limit(4);
       
       if (error) {
-        console.error("Home: Error fetching products:", error); // Added log
+        console.error("Home: Error fetching products:", error);
       } else if (data) {
-        console.log('Home: Products data fetched:', data); // Added log
+        console.log('Home: Products data fetched:', data);
         setProducts(data as Product[]);
       }
       setLoading(false);
-      console.log('Home: Loading set to false.'); // Added log
+      console.log('Home: Loading set to false.');
     };
     fetchProducts();
   }, []);
 
   return (
-    <div className="bg-white">
+    <div className="bg-background">
       <HeroSection />
       <Gallery />
       <WhyChooseUs />
-      <section id="featured-products" className="py-16 sm:py-24"> {/* Added id here */}
+      <section id="featured-products" className="py-16 sm:py-24 bg-background">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 text-center mb-12">
+          <h2 className="text-3xl font-bold tracking-tight text-foreground text-center mb-12">
             {t('home_page.featured_products')}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">

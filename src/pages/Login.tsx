@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { showSuccess, showError } from '@/utils/toast';
 import { useTranslation } from 'react-i18next';
-import DarkVeil from '@/components/DarkVeil'; // Import the new DarkVeil
+import DarkVeil from '@/components/DarkVeil';
 
 const LoginPage = () => {
   const { session } = useAuth();
@@ -88,16 +88,16 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen flex items-stretch">
       <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-gray-900 to-blue-800 items-center justify-center p-12 text-left text-white relative overflow-hidden">
-        <DarkVeil /> {/* The new dynamic DarkVeil component */}
+        <DarkVeil />
         <div className="relative z-10 max-w-md">
           <h1 className="text-5xl font-bold mb-4">{t('login_page.welcome')}</h1>
           <p className="text-xl">{t('login_page.start_journey')}</p>
         </div>
       </div>
-      <div className="w-full lg:w-1/2 flex items-center justify-center bg-white p-8">
-        <div className="w-full max-w-sm text-gray-800">
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-background p-8">
+        <div className="w-full max-w-sm text-foreground">
           <div className="text-center mb-8 lg:hidden">
-            <Link to="/" className="text-3xl font-bold text-gray-800">
+            <Link to="/" className="text-3xl font-bold text-foreground">
               {t('login_page.gusto_glub')}
             </Link>
           </div>
@@ -122,8 +122,20 @@ const LoginPage = () => {
                       variables: {
                         default: {
                           colors: {
-                            brand: '#2563eb', // blue-600
-                            brandAccent: '#1d4ed8', // blue-700
+                            brand: 'hsl(var(--primary))',
+                            brandAccent: 'hsl(var(--primary-foreground))',
+                            defaultButtonBackground: 'hsl(var(--secondary))',
+                            defaultButtonBackgroundHover: 'hsl(var(--secondary-foreground))',
+                            defaultButtonBorder: 'hsl(var(--border))',
+                            defaultButtonText: 'hsl(var(--secondary-foreground))',
+                            inputBackground: 'hsl(var(--input))',
+                            inputBorder: 'hsl(var(--border))',
+                            inputBorderHover: 'hsl(var(--ring))',
+                            inputText: 'hsl(var(--foreground))',
+                            inputLabelText: 'hsl(var(--muted-foreground))',
+                            messageText: 'hsl(var(--foreground))',
+                            anchorTextColor: 'hsl(var(--primary))',
+                            anchorTextHoverColor: 'hsl(var(--primary-foreground))',
                           },
                           radii: {
                             borderRadius: '0.5rem',
@@ -132,7 +144,7 @@ const LoginPage = () => {
                         },
                       },
                     }}
-                    theme="light"
+                    theme="dark" // Set theme to dark for Supabase Auth UI to match dark mode
                     localization={{
                       variables: {
                         sign_in: {

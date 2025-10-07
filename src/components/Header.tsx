@@ -51,11 +51,11 @@ export const Header = () => {
   ];
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
+    <header className="bg-background shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="text-2xl font-bold text-gray-800">
+            <Link to="/" className="text-2xl font-bold text-foreground">
               {t('login_page.gusto_glub')}
             </Link>
           </div>
@@ -64,7 +64,7 @@ export const Header = () => {
               <Link
                 key={item.name}
                 to={item.href}
-                className="text-gray-600 hover:text-gray-900 font-medium"
+                className="text-muted-foreground hover:text-foreground font-medium"
               >
                 {item.name}
               </Link>
@@ -73,13 +73,13 @@ export const Header = () => {
           <div className="flex items-center space-x-4">
             {/* Dark Mode Toggle */}
             <div className="flex items-center space-x-2">
-              <Sun className="h-5 w-5 text-gray-500" />
+              <Sun className="h-5 w-5 text-muted-foreground" />
               <Switch 
                 checked={theme === 'dark'} 
                 onCheckedChange={toggleTheme} 
                 aria-label="Toggle dark mode"
               />
-              <Moon className="h-5 w-5 text-gray-500" />
+              <Moon className="h-5 w-5 text-muted-foreground" />
             </div>
 
             {session ? (
@@ -121,7 +121,7 @@ export const Header = () => {
               </DropdownMenu>
             ) : (
               <Button asChild variant="ghost" className="hidden md:inline-flex">
-                <Link to="/login">{t('header.login')}</Link>
+                <Link to="/login" className="text-muted-foreground hover:text-foreground">{t('header.login')}</Link>
               </Button>
             )}
 
@@ -153,17 +153,17 @@ export const Header = () => {
                       <Link
                         key={item.name}
                         to={item.href}
-                        className="text-lg text-gray-600 hover:text-gray-900 font-medium"
+                        className="text-lg text-muted-foreground hover:text-foreground font-medium"
                       >
                         {item.name}
                       </Link>
                     ))}
                      {!session && (
                       <>
-                        <Link to="/login" className="text-lg text-gray-600 hover:text-gray-900 font-medium">
+                        <Link to="/login" className="text-lg text-muted-foreground hover:text-foreground font-medium">
                           {t('header.login')}
                         </Link>
-                        <Link to="/login" className="text-lg text-gray-600 hover:text-gray-900 font-medium">
+                        <Link to="/login" className="text-lg text-muted-foreground hover:text-foreground font-medium">
                           {t('header.signup')}
                         </Link>
                       </>

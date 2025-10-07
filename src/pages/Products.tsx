@@ -3,14 +3,14 @@ import { useEffect, useState } from 'react';
 import { Product } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Input } from '@/components/ui/input'; // Import Input component
-import { Search } from 'lucide-react'; // Import Search icon
-import { useTranslation } from 'react-i18next'; // Import useTranslation
+import { Input } from '@/components/ui/input';
+import { Search } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const ProductsPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState(''); // State for search term
+  const [searchTerm, setSearchTerm] = useState('');
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const ProductsPage = () => {
         .order('id');
       
       if (searchTerm) {
-        query = query.ilike('name', `%${searchTerm}%`); // Filter by product name
+        query = query.ilike('name', `%${searchTerm}%`);
       }
 
       const { data, error } = await query;
@@ -35,23 +35,23 @@ const ProductsPage = () => {
       setLoading(false);
     };
     fetchProducts();
-  }, [searchTerm]); // Re-fetch products when search term changes
+  }, [searchTerm]);
 
   return (
-    <div className="bg-white">
+    <div className="bg-background">
       <section className="py-16 sm:py-24">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+            <h1 className="text-4xl font-bold tracking-tight text-foreground">
               {t('products_page.title')}
             </h1>
-            <p className="mt-4 text-lg text-gray-600">
+            <p className="mt-4 text-lg text-muted-foreground">
               {t('products_page.description')}
             </p>
           </div>
           <div className="mb-8 flex justify-center">
             <div className="relative w-full max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 type="text"
                 placeholder="Search products..."
