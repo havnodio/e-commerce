@@ -15,6 +15,7 @@ const Home = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      console.log('Home: fetchProducts called.'); // Added log
       setLoading(true);
       const { data, error } = await supabase
         .from('products')
@@ -23,11 +24,13 @@ const Home = () => {
         .limit(4);
       
       if (error) {
-        console.error("Error fetching products:", error);
+        console.error("Home: Error fetching products:", error); // Added log
       } else if (data) {
+        console.log('Home: Products data fetched:', data); // Added log
         setProducts(data as Product[]);
       }
       setLoading(false);
+      console.log('Home: Loading set to false.'); // Added log
     };
     fetchProducts();
   }, []);

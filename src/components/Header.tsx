@@ -105,16 +105,14 @@ export const Header = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
                     {user?.role === 'admin' && (
-                      <DropdownMenuItem asChild>
-                        <a 
-                          href="https://admino-bice.vercel.app" 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          onClick={() => console.log('Header: Dashboard link clicked.')} // Added log
-                        >
-                          <LayoutDashboard className="mr-2 h-4 w-4" />
-                          <span>{t('header.dashboard')}</span>
-                        </a>
+                      <DropdownMenuItem 
+                        onClick={() => {
+                          console.log('Header: Dashboard link clicked via DropdownMenuItem.');
+                          window.open("https://admino-bice.vercel.app", "_blank");
+                        }}
+                      >
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        <span>{t('header.dashboard')}</span>
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuItem asChild>
