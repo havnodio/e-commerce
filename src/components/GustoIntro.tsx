@@ -39,7 +39,7 @@ const GustoIntro: React.FC = () => {
         <SplitText
           text="vous avez aimer"
           tag="h2"
-          className="text-3xl font-medium"
+          className="text-5xl font-bold" {/* Changed to text-5xl and font-bold */}
           splitType="chars"
           duration={0.7}
           delay={50}
