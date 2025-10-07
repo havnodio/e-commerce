@@ -1,4 +1,4 @@
-import { ShoppingCart, User, Search, Menu, LogOut, Settings as SettingsIcon, User as UserIcon, CreditCard, LayoutDashboard } from 'lucide-react';
+import { ShoppingCart, User, Search, Menu, LogOut, Settings as SettingsIcon, User as UserIcon, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
@@ -104,18 +104,7 @@ export const Header = () => {
                   <DropdownMenuLabel>{t('header.my_account')}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    {user?.role === 'admin' && (
-                      <DropdownMenuItem 
-                        onClick={(e) => { // Added event parameter
-                          e.stopPropagation(); // Stop event propagation
-                          console.log('Header: Dashboard link clicked via DropdownMenuItem.');
-                          window.open("https://admino-bice.vercel.app", "_blank");
-                        }}
-                      >
-                        <LayoutDashboard className="mr-2 h-4 w-4" />
-                        <span>{t('header.dashboard')}</span>
-                      </DropdownMenuItem>
-                    )}
+                    {/* Dashboard link removed */}
                     <DropdownMenuItem asChild>
                       <Link to="/account">
                         <UserIcon className="mr-2 h-4 w-4" />
