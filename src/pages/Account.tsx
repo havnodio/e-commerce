@@ -21,6 +21,7 @@ const AccountPage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       if (user) {
+        console.log('AccountPage: Fetching profile for user:', user.id); // Added log
         setLoading(true);
         const { data, error } = await supabase
           .from('profiles')
@@ -29,15 +30,17 @@ const AccountPage = () => {
           .single();
 
         if (error && error.code !== 'PGRST116') {
-          console.error('Error fetching profile:', error);
+          console.error('AccountPage: Error fetching profile:', error); // Added log
           showError(t("account_page.profile_fetch_error"));
         } else if (data) {
+          console.log('AccountPage: Profile data fetched:', data); // Added log
           setFirstName(data.first_name || '');
           setLastName(data.last_name || '');
           setAvatarUrl(data.avatar_url || '');
           setPhoneNumber(data.phone_number || '');
         }
         setLoading(false);
+        console.log('AccountPage: Loading set to false'); // Added log
       }
     };
 

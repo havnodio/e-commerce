@@ -26,7 +26,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { showError, showSuccess } from "@/utils/toast";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useTranslation } from "react-i18next";
+import { useTranslation } => "react-i18next";
 
 const OrdersPage = () => {
   const { user } = useAuth();
@@ -40,9 +40,11 @@ const OrdersPage = () => {
 
   const fetchOrders = async () => {
     if (!user) {
+      console.log('OrdersPage: No user, skipping order fetch.'); // Added log
       setLoading(false);
       return;
     };
+    console.log('OrdersPage: Fetching orders for user:', user.id); // Added log
     setLoading(true);
     let query = supabase
       .from('orders')
@@ -61,11 +63,13 @@ const OrdersPage = () => {
     const { data, error } = await query;
 
     if (error) {
-      console.error("Error fetching orders:", error);
+      console.error("OrdersPage: Error fetching orders:", error); // Added log
     } else if (data) {
+      console.log('OrdersPage: Orders data fetched:', data); // Added log
       setOrders(data as Order[]);
     }
     setLoading(false);
+    console.log('OrdersPage: Loading set to false'); // Added log
   };
 
   useEffect(() => {
