@@ -29,10 +29,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useTranslation } from "react-i18next";
 
 const OrdersPage = () => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth(); // Get authLoading from AuthContext
   const { t } = useTranslation();
   const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Local loading state for this page
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
@@ -40,12 +40,12 @@ const OrdersPage = () => {
 
   const fetchOrders = async () => {
     if (!user) {
-      console.log('OrdersPage: No user, skipping order fetch.'); // Added log
-      setLoading(false);
+      console.log('OrdersPage: No user, skipping order fetch.');
+      setLoading(false); // Ensure local loading is false if no user
       return;
     };
-    console.log('OrdersPage: Fetching orders for user:', user.id); // Added log
-    setLoading(true);
+    console.log('OrdersPage: Fetching orders for user:', user.id);
+    setLoading(true); // Set local loading to true before fetch
     let query = supabase
       .from('orders')
       .select('*')
@@ -63,18 +63,21 @@ const OrdersPage = () => {
     const { data, error } = await query;
 
     if (error) {
-      console.error("OrdersPage: Error fetching orders:", error); // Added log
+      console.error("OrdersPage: Error fetching orders:", error);
+      showError("Failed to load your orders."); // Show a toast on error
     } else if (data) {
-      console.log('OrdersPage: Orders data fetched:', data); // Added log
+      console.log('OrdersPage: Orders data fetched:', data);
       setOrders(data as Order[]);
     }
-    setLoading(false);
-    console.log('OrdersPage: Loading set to false'); // Added log
+    setLoading(false); // Always set local loading to false after fetch attempt
+    console.log('OrdersPage: Local loading set to false after orders fetch.');
   };
 
   useEffect(() => {
-    fetchOrders();
-  }, [user, searchTerm, filterStatus]); // Re-fetch orders when user, search term, or filter status changes
+    if (!authLoading) { // Only fetch orders once AuthContext has finished loading
+      fetchOrders();
+    }
+  }, [user, authLoading, searchTerm, filterStatus]); // Depend on user, authLoading, search, and filter
 
   const handleCancelOrder = async (orderId: string) => {
     if (!window.confirm(t("orders_page.confirm_cancel"))) return;
@@ -93,7 +96,7 @@ const OrdersPage = () => {
     }
   };
 
-  if (loading) {
+  if (authLoading || loading) { // Show loading if AuthContext is loading or local page is loading
     return <div className="container mx-auto py-12 text-center">{t("orders_page.loading_orders")}</div>;
   }
 

@@ -7,6 +7,7 @@ import { Product } from "@/types";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslation } from 'react-i18next';
+import { showError } from "@/utils/toast"; // Import showError
 
 const Home = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -25,6 +26,7 @@ const Home = () => {
       
       if (error) {
         console.error("Home: Error fetching products:", error);
+        showError("Failed to load featured products."); // Show a toast on error
       } else if (data) {
         console.log('Home: Products data fetched:', data);
         setProducts(data as Product[]);

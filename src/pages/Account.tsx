@@ -7,45 +7,51 @@ import { useTranslation } from "react-i18next";
 import AvatarManagement from "@/components/AvatarManagement";
 import ProfileDetailsForm from "@/components/ProfileDetailsForm";
 import PasswordChangeForm from "@/components/PasswordChangeForm";
-import AccountDeletionForm from "@/components/AccountDeletionForm"; // Import the new component
+import AccountDeletionForm from "@/components/AccountDeletionForm";
 
 const AccountPage = () => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth(); // Get authLoading from AuthContext
   const { t } = useTranslation();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Local loading state for this page
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (user) {
-        console.log('AccountPage: Fetching profile for user:', user.id); // Added log
-        setLoading(true);
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('first_name, last_name, avatar_url, phone_number')
-          .eq('id', user.id)
-          .single();
-
-        if (error && error.code !== 'PGRST116') {
-          console.error('AccountPage: Error fetching profile:', error); // Added log
-          showError(t("account_page.profile_fetch_error"));
-        } else if (data) {
-          console.log('AccountPage: Profile data fetched:', data); // Added log
-          setFirstName(data.first_name || '');
-          setLastName(data.last_name || '');
-          setAvatarUrl(data.avatar_url || '');
-          setPhoneNumber(data.phone_number || '');
-        }
-        setLoading(false);
-        console.log('AccountPage: Loading set to false'); // Added log
+      if (!user) {
+        console.log('AccountPage: No user, skipping profile fetch.');
+        setLoading(false); // Ensure local loading is false if no user
+        return;
       }
+
+      console.log('AccountPage: Fetching profile for user:', user.id);
+      setLoading(true); // Set local loading to true before fetch
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('first_name, last_name, avatar_url, phone_number')
+        .eq('id', user.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('AccountPage: Error fetching profile:', error);
+        showError(t("account_page.profile_fetch_error"));
+      } else if (data) {
+        console.log('AccountPage: Profile data fetched:', data);
+        setFirstName(data.first_name || '');
+        setLastName(data.last_name || '');
+        setAvatarUrl(data.avatar_url || '');
+        setPhoneNumber(data.phone_number || '');
+      }
+      setLoading(false); // Always set local loading to false after fetch attempt
+      console.log('AccountPage: Local loading set to false after profile fetch.');
     };
 
-    fetchProfile();
-  }, [user, t]);
+    if (!authLoading) { // Only fetch profile once AuthContext has finished loading
+      fetchProfile();
+    }
+  }, [user, authLoading, t]); // Depend on user and authLoading
 
   const handleAvatarChange = (newUrl: string | null) => {
     setAvatarUrl(newUrl || '');
@@ -57,8 +63,13 @@ const AccountPage = () => {
     setPhoneNumber(newPhoneNumber);
   };
 
-  if (loading) {
+  if (authLoading || loading) { // Show loading if AuthContext is loading or local page is loading
     return <div className="container mx-auto py-12 text-center">{t("account_page.loading_profile")}</div>;
+  }
+
+  // If not loading and no user, redirect to login (handled by ProtectedRoute) or show a message
+  if (!user) {
+    return <div className="container mx-auto py-12 text-center">Please log in to view your account details.</div>;
   }
 
   return (
