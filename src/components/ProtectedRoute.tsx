@@ -7,6 +7,11 @@ const ProtectedRoute = () => {
 
   useEffect(() => {
     console.log('ProtectedRoute: session:', session ? 'present' : 'null', 'loading:', loading);
+    if (!loading && !session) {
+      console.log('ProtectedRoute: Not loading and no session, navigating to /login');
+    } else if (!loading && session) {
+      console.log('ProtectedRoute: Not loading and session present, rendering Outlet');
+    }
   }, [session, loading]);
 
   if (loading) {
