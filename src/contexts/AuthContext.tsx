@@ -22,57 +22,69 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const getSessionAndProfile = async () => {
       console.log('AuthContext: Initial getSessionAndProfile called');
-      const { data: { session: initialSession } } = await supabase.auth.getSession();
-      console.log('AuthContext: Initial session fetched:', initialSession ? 'present' : 'null');
-      setSession(initialSession);
+      try {
+        const { data: { session: initialSession } } = await supabase.auth.getSession();
+        console.log('AuthContext: Initial session fetched:', initialSession ? 'present' : 'null');
+        setSession(initialSession);
 
-      if (initialSession?.user) {
-        console.log('AuthContext: Fetching profile for user:', initialSession.user.id);
-        const { data: profile, error } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', initialSession.user.id)
-          .single();
+        if (initialSession?.user) {
+          console.log('AuthContext: Fetching profile for user:', initialSession.user.id);
+          const { data: profile, error } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', initialSession.user.id)
+            .single();
 
-        if (error && error.code !== 'PGRST116') { // PGRST116 means no row found
-          console.error('AuthContext: Error fetching user profile role:', error);
+          if (error && error.code !== 'PGRST116') { // PGRST116 means no row found
+            console.error('AuthContext: Error fetching user profile role:', error);
+          }
+          const userWithRole = { ...initialSession.user, role: profile?.role || 'user' };
+          console.log('AuthContext: Initial user with role:', userWithRole ? 'present' : 'null');
+          setUser(userWithRole);
+        } else {
+          console.log('AuthContext: No initial user session, setting user to null.');
+          setUser(null);
         }
-        const userWithRole = { ...initialSession.user, role: profile?.role || 'user' };
-        console.log('AuthContext: Initial user with role:', userWithRole ? 'present' : 'null');
-        setUser(userWithRole);
-      } else {
-        console.log('AuthContext: No initial user session, setting user to null.');
-        setUser(null);
+      } catch (error) {
+        console.error('AuthContext: Error in getSessionAndProfile:', error);
+        // Optionally handle error state for user or session here
+      } finally {
+        setLoading(false);
+        console.log('AuthContext: Initial loading set to false');
       }
-      setLoading(false);
-      console.log('AuthContext: Initial loading set to false');
     };
 
     getSessionAndProfile();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
       console.log('AuthContext: onAuthStateChange event:', _event, 'newSession:', newSession ? 'present' : 'null');
-      setSession(newSession);
-      if (newSession?.user) {
-        console.log('AuthContext: onAuthStateChange - Fetching profile for user:', newSession.user.id);
-        const { data: profile, error } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', newSession.user.id)
-          .single();
+      try {
+        setSession(newSession);
+        if (newSession?.user) {
+          console.log('AuthContext: onAuthStateChange - Fetching profile for user:', newSession.user.id);
+          const { data: profile, error } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', newSession.user.id)
+            .single();
 
-        if (error && error.code !== 'PGRST116') {
-          console.error('AuthContext: onAuthStateChange - Error fetching user profile role:', error);
+          if (error && error.code !== 'PGRST116') {
+            console.error('AuthContext: onAuthStateChange - Error fetching user profile role:', error);
+          }
+          const userWithRole = { ...newSession.user, role: profile?.role || 'user' };
+          console.log('AuthContext: onAuthStateChange - User with role:', userWithRole ? 'present' : 'null');
+          setUser(userWithRole);
+        } else {
+          console.log('AuthContext: onAuthStateChange - No user session, setting user to null.');
+          setUser(null);
         }
-        const userWithRole = { ...newSession.user, role: profile?.role || 'user' };
-        console.log('AuthContext: onAuthStateChange - User with role:', userWithRole ? 'present' : 'null');
-        setUser(userWithRole);
-      } else {
-        console.log('AuthContext: onAuthStateChange - No user session, setting user to null.');
-        setUser(null);
+      } catch (error) {
+        console.error('AuthContext: Error in onAuthStateChange callback:', error);
+        // Optionally handle error state for user or session here
+      } finally {
+        setLoading(false); // Ensure loading is set to false after any auth state change
+        console.log('AuthContext: onAuthStateChange - Loading set to false');
       }
-      setLoading(false); // Ensure loading is set to false after any auth state change
-      console.log('AuthContext: onAuthStateChange - Loading set to false');
     });
 
     return () => {
