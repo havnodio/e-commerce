@@ -64,7 +64,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const { data: { session: initialSession }, error: getSessionError } = await supabase.auth.getSession();
         if (getSessionError) {
           console.error('AuthContext: Error getting initial session:', getSessionError);
-          // Proceed with null session if there's an error getting it
           await processSession(null); 
         } else {
           await processSession(initialSession);
@@ -80,9 +79,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
       console.log('AuthContext: onAuthStateChange event:', _event, 'newSession:', newSession ? 'present' : 'null');
-      // For subsequent changes, we also need to set loading to true temporarily
-      // to prevent components from rendering with stale data during the update.
-      setLoading(true); 
+      // Removed setLoading(true) here. The initialLoad already handles the loading state.
+      // This listener should primarily react to changes, not re-initiate a loading state
+      // unless it's a specific event like SIGNED_OUT that requires a UI loading state.
       await processSession(newSession);
     });
 
