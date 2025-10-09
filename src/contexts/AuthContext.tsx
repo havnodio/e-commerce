@@ -20,7 +20,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true); // Initial loading state
 
   useEffect(() => {
-    const handleAuthChange = async (currentSession: Session | null) => {
+    const processSession = async (currentSession: Session | null) => {
+      console.log('AuthContext: processSession called with session:', currentSession ? 'present' : 'null');
       setSession(currentSession);
       if (currentSession?.user) {
         console.log('AuthContext: Fetching profile for user:', currentSession.user.id);
@@ -33,46 +34,56 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
           if (error && error.code !== 'PGRST116') { // PGRST116 means no row found
             console.error('AuthContext: Error fetching user profile role:', error);
+            // Even if profile fetch fails, we still have the user object
+            setUser({ ...currentSession.user, role: 'user' }); 
+          } else if (profile) {
+            const userWithRole = { ...currentSession.user, role: profile.role || 'user' };
+            console.log('AuthContext: User with role:', userWithRole ? 'present' : 'null');
+            setUser(userWithRole);
+          } else {
+            // No profile found, but user exists
+            setUser({ ...currentSession.user, role: 'user' });
           }
-          const userWithRole = { ...currentSession.user, role: profile?.role || 'user' };
-          console.log('AuthContext: User with role:', userWithRole ? 'present' : 'null');
-          setUser(userWithRole);
         } catch (error) {
-          console.error('AuthContext: Error in handleAuthChange profile fetch:', error);
-          setUser({ ...currentSession.user, role: 'user' }); // Default role on error
+          console.error('AuthContext: Unexpected error during profile fetch:', error);
+          setUser({ ...currentSession.user, role: 'user' }); // Default role on unexpected error
         }
       } else {
         console.log('AuthContext: No user session, setting user to null.');
         setUser(null);
       }
-      setLoading(false); // Set loading to false after all async operations are done
-      console.log('AuthContext: Loading set to false after handleAuthChange.');
+      setLoading(false); // Always set loading to false after processing
+      console.log('AuthContext: Loading set to false after processSession.');
     };
 
-    // Initial session check
-    const initialLoad = async () => {
-      console.log('AuthContext: Initial load started.');
-      setLoading(true); // Ensure loading is true at the very start of the effect
+    // Initial load
+    const initializeAuth = async () => {
+      console.log('AuthContext: initializeAuth started.');
+      setLoading(true); // Ensure loading is true at the very start
       try {
-        const { data: { session: initialSession } } = await supabase.auth.getSession();
-        console.log('AuthContext: Initial session fetched:', initialSession ? 'present' : 'null');
-        await handleAuthChange(initialSession); // Process initial session
+        const { data: { session: initialSession }, error: getSessionError } = await supabase.auth.getSession();
+        if (getSessionError) {
+          console.error('AuthContext: Error getting initial session:', getSessionError);
+          // Proceed with null session if there's an error getting it
+          await processSession(null); 
+        } else {
+          await processSession(initialSession);
+        }
       } catch (error) {
-        console.error('AuthContext: Error during initial session load:', error);
-        setSession(null);
-        setUser(null);
-        setLoading(false); // Ensure loading is false even if initial fetch fails
+        console.error('AuthContext: Unexpected error during initializeAuth:', error);
+        await processSession(null); // Ensure loading is false even if initial fetch fails
       }
     };
 
-    initialLoad();
+    initializeAuth();
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
       console.log('AuthContext: onAuthStateChange event:', _event, 'newSession:', newSession ? 'present' : 'null');
-      // For subsequent changes, we don't need to set loading to true again,
-      // as the initial load already handled it. Just update session/user.
-      await handleAuthChange(newSession);
+      // For subsequent changes, we also need to set loading to true temporarily
+      // to prevent components from rendering with stale data during the update.
+      setLoading(true); 
+      await processSession(newSession);
     });
 
     return () => {
